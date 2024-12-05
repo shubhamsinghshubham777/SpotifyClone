@@ -1,0 +1,6 @@
+*.lock
+.gradle
+.idea
+.kotlin
+build/
+out/

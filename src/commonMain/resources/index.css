@@ -1,0 +1,9 @@
+* {
+    background-color: black;
+    color: white;
+    margin: 0;
+}
+
+body {
+    min-width: 800px;
+}
