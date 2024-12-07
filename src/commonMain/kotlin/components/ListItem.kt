@@ -1,6 +1,8 @@
 package components
 
+import Assets
 import Colors
+import Constants
 import ContentOpacity
 import UserSelect
 import androidx.compose.animation.animateColorAsState
@@ -74,7 +76,9 @@ fun IComponent.ListItem() = div {
 
     // Play Button
     if (isHovered) {
-        val hoveredStyle = dev.kilua.html.style.style(pClass = PClass.Hover) { scale(1.05f) }
+        val hoveredStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
+            scale(Constants.SCALE_HOVERED)
+        }
         val pressedStyle = dev.kilua.html.style.style(pClass = PClass.Active) { scale(1f) }
         svg(className = hoveredStyle % pressedStyle, viewBox = "0 0 24 24") {
             val isButtonHovered by rememberIsHoveredAsState()
@@ -99,7 +103,7 @@ fun IComponent.ListItem() = div {
                 )
             }
             // Play Button Path
-            path("M18 12L9 17.1962L9 6.80385L18 12Z")
+            path(Assets.IC_PLAY_PATH)
         }
     }
 }

@@ -4,3 +4,4 @@
 .kotlin
 build/
 out/
+local.properties

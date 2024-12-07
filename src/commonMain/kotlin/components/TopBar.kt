@@ -3,6 +3,7 @@ package components
 import Assets
 import Breakpoint
 import Colors
+import Constants
 import UserSelect
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
@@ -87,7 +88,7 @@ fun IComponent.TopBar() {
 
         // Home Button
         val hoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-            scale(1.05f)
+            scale(Constants.SCALE_HOVERED)
         }
         val pressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
             opacity(0.8)
@@ -191,7 +192,7 @@ fun IComponent.TopBar() {
 
             // Browser Icon
             val browseButtonHoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-                scale(1.05f)
+                scale(Constants.SCALE_HOVERED)
                 style("fill", Colors.white.value)
             }
             val browseButtonPressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
@@ -215,9 +216,8 @@ fun IComponent.TopBar() {
                 marginRight(16.px)
                 if (focusedComponent == FocusedComponent.SearchBar) {
                     path(Assets.IC_BROWSER_FILLED_PATH)
-                } else {
-                    path(Assets.IC_BROWSER_OUTLINED_PATH_1)
-                    path(Assets.IC_BROWSER_OUTLINED_PATH_2)
+                } else for (currentPath in Assets.IC_BROWSER_OUTLINED_PATHS_16) {
+                    path(currentPath)
                 }
                 width(24.px)
             }
@@ -280,7 +280,7 @@ fun IComponent.TopBar() {
 
         // Notification Icon Button
         val notificationButtonHoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-            scale(1.05f)
+            scale(Constants.SCALE_HOVERED)
             style("fill", Colors.white.value)
         }
         val notificationButtonPressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
@@ -299,7 +299,7 @@ fun IComponent.TopBar() {
                 else Colors.onContainer.value
             )
             height(16.px)
-            marginLeft(40.px)
+            marginLeft(32.px)
             marginRight(24.px)
             onClick { focusedComponent = FocusedComponent.BellIcon }
             path(
@@ -326,7 +326,7 @@ fun IComponent.TopBar() {
                 borderRadius(16.px)
                 color(Colors.black)
                 display(Display.Flex)
-                fontSize(14.px)
+                fontSize(13.px)
                 fontWeight(FontWeight.Bold)
                 height(32.px)
                 justifyContent(JustifyContent.Center)

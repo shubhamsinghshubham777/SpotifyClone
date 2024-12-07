@@ -1,4 +1,3 @@
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,6 +5,10 @@ import androidx.compose.runtime.remember
 import dev.kilua.html.Background
 import dev.kilua.html.helpers.TagEvents
 import dev.kilua.html.helpers.TagStyleFun
+import dev.kilua.html.style.CssStyle
+import dev.kilua.html.style.PClass
+import dev.kilua.html.style.style
+import dev.kilua.utils.rem
 import web.dom.HTMLElement
 import web.dom.events.Event
 import web.dom.events.MouseEvent
@@ -23,6 +26,21 @@ fun <E : HTMLElement> TagStyleFun<E>.userSelect(type: UserSelect) = style(
     name = "user-select",
     value = type.name.lowercase()
 )
+
+// TODO: Use this function in older code
+@Composable
+fun classNameFromStyle(
+    onHover: (@Composable CssStyle.() -> Unit)? = null,
+    onPress: (@Composable CssStyle.() -> Unit)? = null,
+): String? {
+    val hoverStyle = onHover?.let { safeOnHover ->
+        style(pClass = PClass.Hover, content = safeOnHover)
+    }
+    val pressStyle = onPress?.let { safeOnPress ->
+        style(pClass = PClass.Active, content = safeOnPress)
+    }
+    return hoverStyle % pressStyle
+}
 
 @Composable
 fun <E : HTMLElement> TagEvents<E>.onMouseOver(listener: (MouseEvent) -> Unit) =
