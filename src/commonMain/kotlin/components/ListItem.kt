@@ -4,7 +4,6 @@ import Assets
 import Colors
 import Constants
 import ContentOpacity
-import UserSelect
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,7 +12,6 @@ import dev.kilua.core.IComponent
 import dev.kilua.html.AlignItems
 import dev.kilua.html.Background
 import dev.kilua.html.BoxShadow
-import dev.kilua.html.Cursor
 import dev.kilua.html.Display
 import dev.kilua.html.FontWeight
 import dev.kilua.html.Overflow
@@ -26,11 +24,9 @@ import dev.kilua.svg.circle
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
 import dev.kilua.utils.rem
-import hideBackground
 import rememberIsHoveredAsState
 import scale
 import toKiluaColor
-import userSelect
 
 @Composable
 fun IComponent.ListItem() = div {
@@ -42,12 +38,11 @@ fun IComponent.ListItem() = div {
     alignItems(AlignItems.Center)
     background(Background(color = animatedBGColor.toKiluaColor()))
     borderRadius(4.px)
-    cursor(Cursor.Pointer)
     display(Display.Flex)
     flexGrow(1)
     height(48.px)
     overflow(Overflow.Hidden)
-    userSelect(UserSelect.None)
+    role(Constants.Role.BUTTON)
 
     img(src = "https://placehold.co/48x48?text=Spotify") {
         boxShadow(
@@ -66,7 +61,6 @@ fun IComponent.ListItem() = div {
     span {
         fontSize(14.px)
         fontWeight(FontWeight.Bold)
-        hideBackground()
         marginLeft(8.px)
         +"The PropheC Radio"
     }
@@ -80,7 +74,7 @@ fun IComponent.ListItem() = div {
             scale(Constants.SCALE_HOVERED)
         }
         val pressedStyle = dev.kilua.html.style.style(pClass = PClass.Active) { scale(1f) }
-        svg(className = hoveredStyle % pressedStyle, viewBox = "0 0 24 24") {
+        svg(className = hoveredStyle % pressedStyle, viewBox = Constants.VIEW_BOX_24) {
             val isButtonHovered by rememberIsHoveredAsState()
             borderRadius(16.px)
             boxShadow(
@@ -93,7 +87,6 @@ fun IComponent.ListItem() = div {
                 )
             )
             height(32.px)
-            hideBackground()
             marginRight(8.px)
             width(32.px)
             circle(cx = 12.px, cy = 12.px, r = 12.px) {

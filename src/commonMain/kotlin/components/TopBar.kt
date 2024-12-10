@@ -4,7 +4,6 @@ import Assets
 import Breakpoint
 import Colors
 import Constants
-import UserSelect
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,14 +33,12 @@ import dev.kilua.html.style.PClass
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
 import dev.kilua.utils.rem
-import hideBackground
 import onMouseOut
 import onMouseOver
 import rememberBreakpoint
 import scale
 import toComposeColor
 import toKiluaColor
-import userSelect
 
 @Composable
 fun IComponent.TopBar() {
@@ -73,11 +70,10 @@ fun IComponent.TopBar() {
         // Spotify Logo
         img(Assets.ICON_SPOTIFY_LOGO) {
             alignSelf(AlignItems.Center)
-            cursor(Cursor.Pointer)
             draggable(false)
             height(32.px)
             marginRight(24.px)
-            userSelect(UserSelect.None)
+            role(Constants.Role.BUTTON)
             width(32.px)
         }
 
@@ -98,21 +94,20 @@ fun IComponent.TopBar() {
             alignSelf(AlignItems.Center)
             background(Background(color = Colors.container))
             borderRadius(24.px)
-            svg(viewBox = "0 0 24 24") {
-                cursor(Cursor.Pointer)
+            svg(viewBox = Constants.VIEW_BOX_24) {
                 draggable(false)
                 fill(
                     if (focusedComponent == FocusedComponent.HomeButton) Colors.white.value
                     else Colors.onContainer.value
                 )
-                hideBackground()
                 onClick { focusedComponent = FocusedComponent.HomeButton }
                 padding(12.px)
+                role(Constants.Role.BUTTON)
+                width(48.px)
                 path(
                     if (focusedComponent == FocusedComponent.HomeButton) Assets.IC_HOME_FILLED_PATH
                     else Assets.IC_HOME_OUTLINED_PATH
                 )
-                width(48.px)
             }
         }
 
@@ -148,7 +143,7 @@ fun IComponent.TopBar() {
             width(450.px)
 
             // Search Icon
-            svg(viewBox = "0 0 24 24") {
+            svg(viewBox = Constants.VIEW_BOX_24) {
                 draggable(false)
                 fill(
                     if (
@@ -158,10 +153,9 @@ fun IComponent.TopBar() {
                     else Colors.onContainer.value
                 )
                 height(24.px)
-                hideBackground()
                 paddingLeft(12.px)
                 paddingRight(12.px)
-                path(Assets.IC_SEARCH)
+                path(Assets.IC_SEARCH_PATH_24)
             }
 
             // TextField
@@ -170,7 +164,6 @@ fun IComponent.TopBar() {
                 color(Colors.white)
                 if (focusedComponent != FocusedComponent.SearchBar) cursor(Cursor.Pointer)
                 flexGrow(1)
-                hideBackground()
                 onBlur { focusedComponent = null }
                 onFocus { focusedComponent = FocusedComponent.SearchBar }
                 outline(Outline(style = OutlineStyle.None))
@@ -178,7 +171,6 @@ fun IComponent.TopBar() {
                 paddingTop(12.px)
                 placeholder("What do you want to play?")
                 style("font-weight", "500")
-                userSelect(UserSelect.None)
             }
 
             // Vertical Divider
@@ -202,24 +194,23 @@ fun IComponent.TopBar() {
             }
             svg(
                 className = browseButtonHoverStyle % browseButtonPressStyle,
-                viewBox = "0 0 24 24"
+                viewBox = Constants.VIEW_BOX_24
             ) {
-                cursor(Cursor.Pointer)
                 draggable(false)
                 fill(
                     if (focusedComponent == FocusedComponent.SearchBar) Colors.white.value
                     else Colors.onContainer.value
                 )
                 height(24.px)
-                hideBackground()
                 marginLeft(12.px)
                 marginRight(16.px)
+                role(Constants.Role.BUTTON)
+                width(24.px)
                 if (focusedComponent == FocusedComponent.SearchBar) {
                     path(Assets.IC_BROWSER_FILLED_PATH)
                 } else for (currentPath in Assets.IC_BROWSER_OUTLINED_PATHS_16) {
                     path(currentPath)
                 }
-                width(24.px)
             }
         }
 
@@ -242,7 +233,6 @@ fun IComponent.TopBar() {
                 paddingRight(16.px)
                 paddingTop(6.px)
                 textOverflow(TextOverflow.Ellipsis)
-                userSelect(UserSelect.None)
                 whiteSpace(WhiteSpace.Nowrap)
                 +"Explore Premium"
             }
@@ -251,12 +241,12 @@ fun IComponent.TopBar() {
         // Install App Button
         div(className = hoverStyle % pressStyle) {
             alignItems(AlignItems.Center)
-            cursor(Cursor.Pointer)
             display(Display.Flex)
             marginLeft(16.px)
+            role(Constants.Role.BUTTON)
 
             // Download Icon
-            svg(viewBox = "0 0 16 16") {
+            svg(viewBox = Constants.VIEW_BOX_16) {
                 fill(Colors.white.value)
                 height(16.px)
                 path(Assets.IC_DOWNLOAD_ARROW_PATH)
@@ -272,7 +262,6 @@ fun IComponent.TopBar() {
                 marginLeft(4.px)
                 overflow(Overflow.Hidden)
                 textOverflow(TextOverflow.Ellipsis)
-                userSelect(UserSelect.None)
                 whiteSpace(WhiteSpace.Nowrap)
                 +"Install App"
             }
@@ -290,10 +279,9 @@ fun IComponent.TopBar() {
         }
         svg(
             className = notificationButtonHoverStyle % notificationButtonPressStyle,
-            viewBox = "0 0 16 16"
+            viewBox = Constants.VIEW_BOX_16
         ) {
             alignSelf(AlignItems.Center)
-            cursor(Cursor.Pointer)
             fill(
                 if (focusedComponent == FocusedComponent.BellIcon) Colors.white.value
                 else Colors.onContainer.value
@@ -302,11 +290,12 @@ fun IComponent.TopBar() {
             marginLeft(32.px)
             marginRight(24.px)
             onClick { focusedComponent = FocusedComponent.BellIcon }
+            role(Constants.Role.BUTTON)
+            width(16.px)
             path(
                 if (focusedComponent == FocusedComponent.BellIcon) Assets.IC_BELL_FILLED_PATH
                 else Assets.IC_BELL_OUTLINED_PATH
             )
-            width(16.px)
         }
 
         // User Avatar
@@ -315,10 +304,10 @@ fun IComponent.TopBar() {
             alignSelf(AlignItems.Center)
             background(Background(color = Colors.container))
             borderRadius(24.px)
-            cursor(Cursor.Pointer)
             display(Display.Flex)
             height(48.px)
             justifyContent(JustifyContent.Center)
+            role(Constants.Role.BUTTON)
             width(48.px)
             div {
                 alignItems(AlignItems.Center)
@@ -330,7 +319,6 @@ fun IComponent.TopBar() {
                 fontWeight(FontWeight.Bold)
                 height(32.px)
                 justifyContent(JustifyContent.Center)
-                userSelect(UserSelect.None)
                 width(32.px)
                 +"S"
             }

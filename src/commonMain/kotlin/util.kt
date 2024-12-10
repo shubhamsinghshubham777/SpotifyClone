@@ -1,4 +1,5 @@
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -6,6 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import dev.kilua.Hot
+import web.document
+import web.dom.events.Event
+import web.dom.pointerevents.PointerEvent
 import web.window
 
 expect fun webpackHot(): Hot?
@@ -52,5 +56,23 @@ fun rememberBreakpoint(): State<Breakpoint> {
                 else -> Breakpoint.Desktop
             }
         }
+    }
+}
+
+@Composable
+fun onGlobalPointerUp(callback: () -> Unit) {
+    DisposableEffect(Unit) {
+        val listener = { _: Event -> callback() }
+        document.addEventListener(Constants.EventName.POINTER_UP, listener)
+        onDispose { document.removeEventListener(Constants.EventName.POINTER_UP, listener) }
+    }
+}
+
+@Composable
+fun onGlobalPointerMove(callback: (e: PointerEvent) -> Unit) {
+    DisposableEffect(Unit) {
+        val listener = { e: Event -> callback(e as PointerEvent) }
+        document.addEventListener(Constants.EventName.POINTER_MOVE, listener)
+        onDispose { document.removeEventListener(Constants.EventName.POINTER_MOVE, listener) }
     }
 }

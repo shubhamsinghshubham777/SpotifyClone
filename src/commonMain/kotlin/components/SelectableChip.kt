@@ -1,28 +1,28 @@
 package components
 
 import Colors
+import Constants
 import ContentOpacity
-import UserSelect
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import dev.kilua.core.IComponent
 import dev.kilua.html.Background
-import dev.kilua.html.Cursor
+import dev.kilua.html.ISpan
 import dev.kilua.html.px
 import dev.kilua.html.span
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import toComposeColor
 import toKiluaColor
-import userSelect
 
 @Composable
 fun IComponent.SelectableChip(
     text: String,
     isSelected: Boolean,
     onSelectionChange: (Boolean) -> Unit,
+    config: (@Composable ISpan.() -> Unit)? = null,
 ) = span {
     val isHovered by rememberIsHoveredAsState()
     val isPressed by rememberIsPressedAsState()
@@ -43,16 +43,17 @@ fun IComponent.SelectableChip(
         else Colors.white.value.toComposeColor()
     )
     background(Background(color = animatedBackgroundColor.toKiluaColor()))
-    borderRadius(16.px)
+    borderRadius(20.px)
     color(animatedContentColor.toKiluaColor())
-    cursor(Cursor.Pointer)
-    fontSize(14.px)
+    fontSize(12.px)
     onClick { onSelectionChange(!isSelected) }
-    paddingBottom(6.px)
+    paddingBottom(7.px)
     paddingLeft(12.px)
     paddingRight(12.px)
-    paddingTop(6.px)
-    style("font-weight", "500")
-    userSelect(UserSelect.None)
+    paddingTop(7.px)
+    role(Constants.Role.BUTTON)
+    // Keep custom config in last to override all other styles above if needed
+    config?.invoke(this)
+
     +text
 }

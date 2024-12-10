@@ -4,7 +4,6 @@ import Assets
 import Colors
 import Constants
 import ContentOpacity
-import UserSelect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +15,6 @@ import dev.kilua.form.number.range
 import dev.kilua.html.AlignItems
 import dev.kilua.html.Background
 import dev.kilua.html.Color
-import dev.kilua.html.Cursor
 import dev.kilua.html.IDiv
 import dev.kilua.html.JustifyContent
 import dev.kilua.html.TextOverflow
@@ -34,7 +32,6 @@ import dev.kilua.svg.svg
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import scale
-import userSelect
 
 @Composable
 fun IComponent.FooterPlayer() {
@@ -58,28 +55,20 @@ fun IComponent.FooterPlayer() {
             img(src = "https://placehold.co/48x48?text=Spotify") {
                 borderRadius(4.px)
                 style("aspect-ratio", "1/1")
-                userSelect(UserSelect.None)
             }
             vPanel(justifyContent = JustifyContent.Center) {
                 marginLeft(16.px)
                 divt("I'm Good (Blue)") {
                     fontSize(14.px)
-                    userSelect(UserSelect.None)
                 }
                 divt("David Guetta, Bebe Rexha") {
                     color(Colors.onContainer)
                     fontSize(12.px)
                     style("font-weight", "300")
                     textOverflow(TextOverflow.Ellipsis)
-                    userSelect(UserSelect.None)
                 }
             }
-            controlIcon(
-                paths = arrayOf(
-                    Assets.IC_ADD_OUTLINED_CIRCLE_PATH,
-                    Assets.IC_ADD_OUTLINED_PLUS_PATH
-                ),
-            ) {
+            controlIcon(Assets.IC_ADD_OUTLINED_PATHS_16) {
                 alignSelf(AlignItems.Center)
                 marginLeft(8.px)
             }
@@ -106,7 +95,6 @@ fun IComponent.FooterPlayer() {
                 svg(viewBox = "0 0 32 32") {
                     val isHovered by rememberIsHoveredAsState()
                     val isPressed by rememberIsPressedAsState()
-                    cursor(Cursor.Pointer)
                     fill(Colors.white.value)
                     height(32.px)
                     onClick { isMusicPlaying = !isMusicPlaying }
@@ -117,6 +105,7 @@ fun IComponent.FooterPlayer() {
                             else -> 1.0
                         }
                     )
+                    role(Constants.Role.BUTTON)
                     scale(
                         when {
                             isPressed -> 1f
@@ -158,19 +147,17 @@ fun IComponent.FooterPlayer() {
                 style("font-weight", "300")
                 divt("0:13") {
                     opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
-                    userSelect(UserSelect.None)
                 }
                 range {
-                    cursor(Cursor.Pointer)
                     flexGrow(1)
                     height(4.px)
                     marginLeft(8.px)
                     marginRight(8.px)
+                    role(Constants.Role.BUTTON)
                     style("accent-color", Colors.greenButtonBG.value)
                 }
                 divt("2:55") {
                     opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
-                    userSelect(UserSelect.None)
                 }
             }
         }
@@ -255,13 +242,13 @@ private fun IComponent.controlIcon(
             className = classNameFromStyle(
                 onHover = { style("fill", contentColor.value) }
             ),
-            viewBox = "0 0 16 16"
+            viewBox = Constants.VIEW_BOX_16
         ) {
-            cursor(Cursor.Pointer)
             fill(if (isSelected) Colors.greenButtonBG.value else Colors.onContainer.value)
             height(size.px)
             minHeight(size.px)
             minWidth(size.px)
+            role(Constants.Role.BUTTON)
             width(size.px)
             for (currentPath in paths) path(currentPath)
         }

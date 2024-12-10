@@ -5,6 +5,7 @@ object Colors {
     val avatarBackground = Color("#7d4b32")
     val black = Color("#000000")
     val container = Color("#1f1f1f")
+    val containerElevated = Color("#121212")
     val containerHighlighted = Color("#2a2a2a")
     val greenButtonBG = Color("#1ED760")
     val greenButtonBGHighlighted = Color("#3ae075")
@@ -17,7 +18,7 @@ object Colors {
 
 object ContentOpacity {
     const val HOVERED = 0.2f
-    const val NORMAL = 0.16f
+    const val NORMAL = 0.1f
     const val PRESSED = 0.27f
     const val SELECTED = 1f
     const val SELECTED_HOVERED = 0.94f
