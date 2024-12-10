@@ -221,7 +221,7 @@ fun IComponent.TopBar() {
             // Explore Premium Button
             button(className = hoverStyle % pressStyle) {
                 alignSelf(AlignItems.Center)
-                background(Background(color = Colors.offWhite))
+                background(Background(color = Colors.white))
                 border(Border(style = BorderStyle.None))
                 borderRadius(18.px)
                 color(Colors.black)
