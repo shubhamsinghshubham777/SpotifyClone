@@ -58,7 +58,9 @@ class App : Application() {
                     onResize = { width -> sidebarWidthState.value = width }
                 ) {
                     flexGrow(1)
-                    margin(8.px)
+                    marginLeft(8.px)
+                    marginRight(8.px)
+                    marginTop(8.px)
                     overflowY(Overflow.Hidden)
                 }
                 FooterPlayer()

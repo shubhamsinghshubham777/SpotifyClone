@@ -9,6 +9,7 @@ object Colors {
     val containerHighlighted = Color("#2a2a2a")
     val greenButtonBG = Color("#1ED760")
     val greenButtonBGHighlighted = Color("#3ae075")
+    val greenButtonBGPressed = Color("#1ab852")
     val offWhite = Color("#f0f0f0")
     val onContainer = Color("#b3b3b3")
     val outline = Color("#404040")

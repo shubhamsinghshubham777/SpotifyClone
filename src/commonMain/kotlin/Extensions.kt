@@ -18,11 +18,15 @@ import dev.kilua.html.helpers.TagStyleFun
 import dev.kilua.html.style.CssStyle
 import dev.kilua.html.style.PClass
 import dev.kilua.html.style.style
+import dev.kilua.utils.jsObjectOf
 import dev.kilua.utils.rem
 import web.dom.HTMLElement
 import web.dom.events.Event
 import web.dom.events.MouseEvent
+import web.dom.observers.ResizeObserver
+import web.dom.observers.ResizeObserverOptions
 import web.dom.pointerevents.PointerEvent
+import web.get
 import web.window
 
 @Composable
@@ -179,6 +183,20 @@ fun <E : HTMLElement> ITag<E>.rememberScrollOffset(
     }
 
     return offsetState
+}
+
+@Composable
+fun <E : HTMLElement> ITag<E>.rememberWidth(): State<Double?> {
+    val widthState = remember { mutableStateOf<Double?>(null) }
+    DisposableEffect(Unit) {
+        val observer = ResizeObserver { entries, _ ->
+            entries[0]?.contentRect?.let { rect -> widthState.value = rect.width }
+        }
+        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
+        observer.observe(element, jsObjectOf() as ResizeObserverOptions)
+        onDispose { observer.disconnect() }
+    }
+    return widthState
 }
 
 // TODO: Use this function in older code

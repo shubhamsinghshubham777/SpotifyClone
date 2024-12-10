@@ -140,7 +140,7 @@ fun IComponent.FooterPlayer() {
             }
 
             // Spacer
-            div { flexGrow(1) }
+            div { height(8.px) }
 
             hPanel(alignItems = AlignItems.Center) {
                 fontSize(12.px)
