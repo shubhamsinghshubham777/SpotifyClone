@@ -97,6 +97,7 @@ fun IComponent.SideBar(
         val containerClassName = "libraryScrollableContainer"
         vPanel(className = containerClassName) {
             overflowY(Overflow.Auto)
+            paddingBottom(4.px)
             style (".$containerClassName::-webkit-scrollbar") {
                 display(Display.None)
                 // For Firefox
@@ -250,10 +251,8 @@ private fun IComponent.LibraryItem(
         borderRadius(8.px)
         color(Colors.onContainer)
         fontSize(14.px)
-        marginBottom(4.px)
         marginLeft(if (isExpanded) 8.px else 4.px)
         marginRight(if (isExpanded) 8.px else 4.px)
-        marginTop(4.px)
         role(Constants.Role.BUTTON)
 
         span {

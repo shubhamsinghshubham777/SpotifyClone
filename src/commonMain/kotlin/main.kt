@@ -2,6 +2,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import components.FooterPlayer
+import components.MainBody
 import components.SideBar
 import components.SplitPanel
 import components.TopBar
@@ -24,7 +25,7 @@ class App : Application() {
     override fun start(state: String?) {
         root("root") {
             val breakpoint by rememberBreakpoint()
-            val widthState = remember { mutableStateOf<Int?>(null) }
+            val sidebarWidthState = remember { mutableStateOf<Int?>(null) }
             val splitPanelBreakpoints = remember {
                 listOf(
                     Constants.SIDEBAR_BREAKPOINT_1_START to Constants.SIDEBAR_BREAKPOINT_1_END,
@@ -47,14 +48,14 @@ class App : Application() {
                     },
                     leftItem = {
                         SideBar(
-                            widthState = widthState,
+                            widthState = sidebarWidthState,
                             splitPanelMinWidth = splitPanelMinWidth,
                             splitPanelSecondBreakpointMinWidth = splitPanelBreakpoints.last().first,
                             splitPanelSecondBreakpointMaxWidth = splitPanelBreakpoints.last().second,
                         )
                     },
-                    rightItem = { +"Body (${widthState.value})" },
-                    onResize = { width -> widthState.value = width }
+                    rightItem = { MainBody() },
+                    onResize = { width -> sidebarWidthState.value = width }
                 ) {
                     flexGrow(1)
                     margin(8.px)

@@ -225,7 +225,7 @@ fun IComponent.TopBar() {
                 border(Border(style = BorderStyle.None))
                 borderRadius(18.px)
                 color(Colors.black)
-                fontSize(14.px)
+                fontSize(13.px)
                 fontWeight(FontWeight.Bold)
                 overflow(Overflow.Hidden)
                 paddingBottom(6.px)

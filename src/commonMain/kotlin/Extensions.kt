@@ -1,4 +1,3 @@
-
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
@@ -6,6 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import components.ScrollDirection
@@ -23,6 +23,7 @@ import web.dom.HTMLElement
 import web.dom.events.Event
 import web.dom.events.MouseEvent
 import web.dom.pointerevents.PointerEvent
+import web.window
 
 @Composable
 fun <E : HTMLElement> TagStyleFun<E>.scale(scale: Float = 1f) = style("scale", "$scale $scale")
@@ -149,6 +150,35 @@ fun <E : HTMLElement> ITag<E>.rememberScrollPosition(
     }
 
     return scrollPosition
+}
+
+@Composable
+fun <E : HTMLElement> ITag<E>.rememberScrollOffset(
+    scrollDirection: ScrollDirection
+): State<Double> {
+    val offsetState = remember { mutableDoubleStateOf(0.0) }
+
+    DisposableEffect(Unit) {
+        val listener: (Event) -> Unit = { _: Event ->
+            offsetState.value = when (scrollDirection) {
+                ScrollDirection.Horizontal -> element.scrollLeft
+                ScrollDirection.Vertical -> element.scrollTop
+            }
+        }
+
+        window.requestAnimationFrame {
+            offsetState.value = when (scrollDirection) {
+                ScrollDirection.Horizontal -> element.scrollLeft
+                ScrollDirection.Vertical -> element.scrollTop
+            }
+        }
+
+        element.addEventListener(Constants.EventName.SCROLL, listener)
+
+        onDispose { element.removeEventListener(Constants.EventName.SCROLL, listener) }
+    }
+
+    return offsetState
 }
 
 // TODO: Use this function in older code
