@@ -1,0 +1,21 @@
+{
+  "name": "Spotify - Web Player: Music for everyone",
+  "short_name": "Spotify",
+  "description": "Spotify is a digital music service that gives you access to millions of songs.",
+  "icons": [
+    {
+      "src": "favicon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/src/commonMain/resources/index.html",
+  "display": "fullscreen",
+  "theme_color": "#1ED760",
+  "background_color": "#1ED760"
+}
