@@ -443,13 +443,19 @@ private fun IDiv.CategorisedPlaylists(categoryTitle: String, playlists: List<Pla
             zIndex(1)
         }
 
+        val filterScrollButtonHeight = remember(titlePanel.element.clientHeight) {
+            "calc(100% - ${titlePanel.element.clientHeight}px)"
+        }
+        val filterScrollButtonTranslationY = remember { "translate(0px, -40px)" }
+
         FilterScrollButton(isStartButton = true, showGradient = false) {
             val isHovered by rememberIsHoveredAsState()
             bottom(0.px)
             left(if (isHovered) 0.px else arrowAnimatedOffsetX.px)
             opacity(if (isHovered) 1.0 else startArrowAnimatedOpacity.toDouble())
             position(Position.Absolute)
-            style("height", "calc(100% - ${titlePanel.element.clientHeight}px)")
+            style("height", filterScrollButtonHeight)
+            style("transform", filterScrollButtonTranslationY)
             zIndex(1)
         }
 
@@ -459,7 +465,8 @@ private fun IDiv.CategorisedPlaylists(categoryTitle: String, playlists: List<Pla
             opacity(if (isHovered) 1.0 else endArrowAnimatedOpacity.toDouble())
             position(Position.Absolute)
             right(if (isHovered) 0.px else arrowAnimatedOffsetX.px)
-            style("height", "calc(100% - ${titlePanel.element.clientHeight}px)")
+            style("height", filterScrollButtonHeight)
+            style("transform", filterScrollButtonTranslationY)
             zIndex(1)
         }
 
