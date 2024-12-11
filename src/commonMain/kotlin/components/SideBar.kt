@@ -98,7 +98,7 @@ fun IComponent.SideBar(
         vPanel(className = containerClassName) {
             overflowY(Overflow.Auto)
             paddingBottom(4.px)
-            style (".$containerClassName::-webkit-scrollbar") {
+            style(".$containerClassName::-webkit-scrollbar") {
                 display(Display.None)
                 // For Firefox
                 style("scrollbar-width", "none")
@@ -117,7 +117,7 @@ private fun IComponent.FakeLibraryList(
 ) {
     repeat(24) { index ->
         LibraryItem(
-            imageURL = "https://placehold.co/48x48?text=Spotify",
+            imageURL = "/assets/sidebar_images/${index + 1}.png",
             name = when (index) {
                 0 -> "Liked Songs"
                 1 -> "New Music Hindi"
@@ -258,17 +258,20 @@ private fun IComponent.LibraryItem(
         span {
             val imgBorderRadius = remember { 4 }
             val imgPadding = remember { 8 }
-            val imgSize = remember { 64 }
-            val overlaySize = remember { (imgSize - (imgPadding * 2)) }
-            height(imgSize.px)
+            val containerSize = remember { 64 }
+            val imageSize = remember { (containerSize - (imgPadding * 2)) }
+            height(containerSize.px)
             padding(imgPadding.px)
             position(Position.Relative)
-            width(imgSize.px)
+            width(containerSize.px)
             img(imageURL) {
                 borderRadius(
-                    if (type == "Artist") imgSize.div(2).px
+                    if (type == "Artist") containerSize.div(2).px
                     else imgBorderRadius.px
                 )
+                height(imageSize.px)
+                style("object-fit", "cover")
+                width(imageSize.px)
             }
             // Dark Overlay
             if (isExpanded && isHovered) {
@@ -278,12 +281,12 @@ private fun IComponent.LibraryItem(
                 ) {
                     background(Background(color = Color.Black))
                     borderRadius(imgBorderRadius.px)
-                    height(overlaySize.px)
+                    height(imageSize.px)
                     left(imgPadding.px)
                     opacity(0.75)
                     position(Position.Absolute)
                     top(imgPadding.px)
-                    width(overlaySize.px)
+                    width(imageSize.px)
                     svg(viewBox = Constants.VIEW_BOX_24) {
                         fill(Colors.white.value)
                         path(Assets.IC_PLAY_PATH)
