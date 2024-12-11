@@ -1,13 +1,16 @@
 package components
 
 import Assets
+import Breakpoint
 import Colors
 import Constants
 import ContentOpacity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import animateColorOnInteraction
 import animateScaleOnInteraction
@@ -30,6 +33,7 @@ import dev.kilua.svg.ISvgTag
 import dev.kilua.svg.path
 import dev.kilua.svg.rect
 import dev.kilua.svg.svg
+import rememberBreakpoint
 import rememberIsHoveredAsState
 import toKiluaColor
 
@@ -39,6 +43,11 @@ fun IComponent.ListItem(
     imageUrl: String,
     onHoverChanged: (Boolean) -> Unit,
 ) = div {
+    val breakpoint by rememberBreakpoint()
+    val isNotDesktop by remember { derivedStateOf { breakpoint != Breakpoint.Desktop } }
+    val sizePx by remember { derivedStateOf { if (isNotDesktop) 48.px else 64.px } }
+    val textSizePx by remember { derivedStateOf { if (isNotDesktop) 12.px else 15.px } }
+
     val isHovered by rememberIsHoveredAsState()
     val animatedBGColor by animateColorAsState(
         if (isHovered) Color.White.copy(alpha = ContentOpacity.HOVERED)
@@ -52,7 +61,7 @@ fun IComponent.ListItem(
     borderRadius(4.px)
     display(Display.Flex)
     flexGrow(1)
-    height(48.px)
+    height(sizePx)
     overflow(Overflow.Hidden)
     position(Position.Relative)
     role(Constants.Role.BUTTON)
@@ -67,15 +76,16 @@ fun IComponent.ListItem(
                 color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
             )
         )
-        height(48.px)
-        width(48.px)
+        height(sizePx)
+        width(sizePx)
     }
 
     span {
-        fontSize(14.px)
+        val margin by remember { derivedStateOf { if (isNotDesktop) 8.px else 16.px } }
+        fontSize(textSizePx)
         fontWeight(FontWeight.Bold)
-        marginLeft(8.px)
-        marginRight(8.px)
+        marginLeft(margin)
+        marginRight(margin)
         overflow(Overflow.Hidden)
         textOverflow(TextOverflow.Ellipsis)
         whiteSpace(WhiteSpace.Nowrap)

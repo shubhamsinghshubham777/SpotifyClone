@@ -1,6 +1,7 @@
 package components
 
 import Assets
+import Breakpoint
 import Colors
 import Constants
 import androidx.compose.animation.animateColorAsState
@@ -46,6 +47,7 @@ import dev.kilua.svg.path
 import dev.kilua.svg.svg
 import models.PlaylistBasicInfo
 import models.PlaylistType
+import rememberBreakpoint
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import rememberScrollOffset
@@ -519,8 +521,10 @@ private fun IDiv.PlaylistGrid(
     onHoveredIndexChanged: (Int) -> Unit,
 ) {
     gridPanel {
+        val breakpoint by rememberBreakpoint()
         val gridWidth by rememberWidth()
         val isLargeGrid by remember { derivedStateOf { (gridWidth ?: 0.0) >= 815 } }
+        val isNotDesktop by remember { derivedStateOf { breakpoint != Breakpoint.Desktop } }
         columnGap(8.px)
         display(Display.Grid)
         gridTemplateColumns("1fr 1fr${if (isLargeGrid) " 1fr 1fr" else ""}")
@@ -528,7 +532,7 @@ private fun IDiv.PlaylistGrid(
         paddingLeft(16.px)
         paddingRight(16.px)
         paddingTop(64.px)
-        rowGap(8.px)
+        rowGap(if (isNotDesktop) 8.px else 12.px)
         style(
             name = "background",
             value = "linear-gradient(" +
@@ -538,7 +542,16 @@ private fun IDiv.PlaylistGrid(
         fakePlaylists.forEachIndexed { index, title ->
             ListItem(
                 title = title,
-                imageUrl = "https://placehold.co/48x48?text=Spotify",
+                imageUrl = when (index) {
+                    0 -> Assets.Images.GRID_IMAGE_1
+                    1 -> Assets.Images.GRID_IMAGE_2
+                    2 -> Assets.Images.GRID_IMAGE_3
+                    3 -> Assets.Images.GRID_IMAGE_4
+                    4 -> Assets.Images.GRID_IMAGE_5
+                    5 -> Assets.Images.GRID_IMAGE_6
+                    6 -> Assets.Images.GRID_IMAGE_7
+                    else -> Assets.Images.GRID_IMAGE_8
+                },
                 onHoverChanged = { isHovered ->
                     onHoveredIndexChanged(if (isHovered) index else 0)
                 }

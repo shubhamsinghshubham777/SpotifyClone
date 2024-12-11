@@ -122,4 +122,15 @@ object Assets {
         "M13.86 5.47a.75.75 0 0 0-1.061 0l-1.47 1.47-1.47-1.47A.75.75 0 0 0 8.8 6.53L10.269 8l-1.47 1.47a.75.75 0 1 0 1.06 1.06l1.47-1.47 1.47 1.47a.75.75 0 0 0 1.06-1.06L12.39 8l1.47-1.47a.75.75 0 0 0 0-1.06z",
         "M10.116 1.5A.75.75 0 0 0 8.991.85l-6.925 4a3.642 3.642 0 0 0-1.33 4.967 3.639 3.639 0 0 0 1.33 1.332l6.925 4a.75.75 0 0 0 1.125-.649v-1.906a4.73 4.73 0 0 1-1.5-.694v1.3L2.817 9.852a2.141 2.141 0 0 1-.781-2.92c.187-.324.456-.594.78-.782l5.8-3.35v1.3c.45-.313.956-.55 1.5-.694V1.5z",
     )
+
+    object Images {
+        const val GRID_IMAGE_1 = "/assets/grid_images/1.png"
+        const val GRID_IMAGE_2 = "/assets/grid_images/2.png"
+        const val GRID_IMAGE_3 = "/assets/grid_images/3.png"
+        const val GRID_IMAGE_4 = "/assets/grid_images/4.png"
+        const val GRID_IMAGE_5 = "/assets/grid_images/5.png"
+        const val GRID_IMAGE_6 = "/assets/grid_images/6.jpg"
+        const val GRID_IMAGE_7 = "/assets/grid_images/7.png"
+        const val GRID_IMAGE_8 = "/assets/grid_images/8.png"
+    }
 }
