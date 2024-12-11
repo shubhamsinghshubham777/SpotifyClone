@@ -5,7 +5,10 @@ import Colors
 import Constants
 import ContentOpacity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -13,23 +16,31 @@ import animateColorOnInteraction
 import animateOpacityOnInteraction
 import animateScaleOnInteraction
 import dev.kilua.core.IComponent
+import dev.kilua.externals.get
+import dev.kilua.form.number.IRange
 import dev.kilua.form.number.range
 import dev.kilua.html.AlignItems
 import dev.kilua.html.Background
 import dev.kilua.html.Color
+import dev.kilua.html.Cursor
 import dev.kilua.html.IDiv
 import dev.kilua.html.JustifyContent
 import dev.kilua.html.TextOverflow
 import dev.kilua.html.div
 import dev.kilua.html.divt
 import dev.kilua.html.img
+import dev.kilua.html.perc
 import dev.kilua.html.px
+import dev.kilua.html.style.style
 import dev.kilua.html.vw
 import dev.kilua.panel.hPanel
 import dev.kilua.panel.vPanel
 import dev.kilua.svg.circle
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
+import dev.kilua.utils.rem
+import rememberIsHoveredAsState
+import web.dom.events.Event
 
 @Composable
 fun IComponent.FooterPlayer() {
@@ -50,7 +61,7 @@ fun IComponent.FooterPlayer() {
         // Current Song Details
         hPanel {
             flexGrow()
-            img(src = "https://placehold.co/48x48?text=Spotify") {
+            img(src = "assets/now_playing_img.png") {
                 borderRadius(4.px)
                 style("aspect-ratio", "1/1")
             }
@@ -135,13 +146,13 @@ fun IComponent.FooterPlayer() {
                 divt("0:13") {
                     opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
                 }
-                range {
+                SpotifyRange(
+                    className = "slider-1",
+                    initialValue = 13
+                ) {
                     flexGrow(1)
-                    height(4.px)
                     marginLeft(8.px)
                     marginRight(8.px)
-                    role(Constants.Role.BUTTON)
-                    style("accent-color", Colors.greenButtonBG.value)
                 }
                 divt("2:55") {
                     opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
@@ -177,12 +188,32 @@ fun IComponent.FooterPlayer() {
                 onClick = { isConnectDevicesSelected = !isConnectDevicesSelected },
             )
             hPanel(alignItems = AlignItems.Center) {
-                controlIcon(Assets.IC_VOLUME_PATHS_16)
-                range {
-                    height(4.px)
+                var progress by remember { mutableIntStateOf(0) }
+                val volumeLevel by remember {
+                    derivedStateOf {
+                        when (progress) {
+                            0 -> VolumeLevel.Off
+                            in 1..33 -> VolumeLevel.Level1
+                            in 33..66 -> VolumeLevel.Level2
+                            else -> VolumeLevel.Level3
+                        }
+                    }
+                }
+
+                controlIcon(
+                    when (volumeLevel) {
+                        VolumeLevel.Off -> Assets.IC_VOLUME_OFF_PATHS_16
+                        VolumeLevel.Level1 -> arrayOf(Assets.IC_VOLUME_LEVEL_1_PATH_16)
+                        VolumeLevel.Level2 -> arrayOf(Assets.IC_VOLUME_LEVEL_2_PATH_16)
+                        VolumeLevel.Level3 -> Assets.IC_VOLUME_LEVEL_3_PATHS_16
+                    }
+                )
+                SpotifyRange(
+                    className = "slider-2",
+                    onProgressChange = { progress = it }
+                ) {
                     marginLeft(8.px)
                     minWidth(48.px)
-                    style("accent-color", Colors.greenButtonBG.value)
                     width(6.vw)
                 }
             }
@@ -196,6 +227,57 @@ fun IComponent.FooterPlayer() {
                 onClick = {}
             )
         }
+    }
+}
+
+@Composable
+private fun IComponent.SpotifyRange(
+    className: String,
+    initialValue: Int? = null,
+    onProgressChange: ((Int) -> Unit)? = null,
+    config: (@Composable IRange.() -> Unit)? = null
+) {
+    var progress by remember { mutableIntStateOf(initialValue ?: 0) }
+    var isHovered by remember { mutableStateOf(false) }
+    val progressColor by remember {
+        derivedStateOf { if (isHovered) Color("#1ab853") else Color.White }
+    }
+    val thumbClassName = style(selector = ".$className::-webkit-slider-thumb") {
+        background(Background(color = if (isHovered) Colors.white else Colors.transparent))
+        borderRadius(5.px)
+        height(10.px)
+        style("-webkit-appearance", "none")
+        style("appearance", "none")
+        style("transform", "translate(0px, -3px)")
+        width(10.px)
+    }
+    val runnableTrackClassName = style(selector = ".$className::-webkit-slider-runnable-track") {
+        borderRadius(2.px)
+        height(4.px)
+        style(
+            "background",
+            "linear-gradient(to right, ${progressColor.value} $progress%, #4d4c4c $progress%)"
+        )
+    }
+    range(className = className % thumbClassName % runnableTrackClassName) {
+        isHovered = rememberIsHoveredAsState().value
+
+        LaunchedEffect(Unit) {
+            setValue(progress)
+            onProgressChange?.invoke(progress)
+        }
+
+        cursor(Cursor.Pointer)
+        height(10.px)
+        onEvent<Event>("input") {
+            progress = it.target?.get("value").toString().toInt()
+            onProgressChange?.invoke(progress)
+        }
+        style("-webkit-appearance", "none")
+        style("appearance", "none")
+        style("outline", "none")
+        width(100.perc)
+        config?.invoke(this)
     }
 }
 
@@ -249,3 +331,5 @@ private fun IComponent.controlIcon(
 }
 
 private enum class RepeatState { Off, On, One }
+
+private enum class VolumeLevel { Off, Level1, Level2, Level3 }

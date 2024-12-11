@@ -63,8 +63,8 @@ fun IComponent.TopBar() {
 
     div {
         display(Display.Flex)
-        marginLeft(24.px)
-        marginRight(24.px)
+        marginLeft(28.px)
+        marginRight(8.px)
         marginTop(8.px)
 
         // Spotify Logo
