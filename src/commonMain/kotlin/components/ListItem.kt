@@ -103,7 +103,7 @@ fun IDiv.GreenPlayButton(
             pressColor = Colors.greenButtonBGPressed,
             applyOnFill = true
         )
-        animateScaleOnInteraction(onHover = Constants.SCALE_HOVERED)
+        animateScaleOnInteraction()
         borderRadius((sizePx / 2).px)
         if (marginBottomPx != null) bottom(marginBottomPx.px)
         boxShadow(

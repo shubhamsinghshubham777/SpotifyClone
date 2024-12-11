@@ -10,6 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import animateColorOnInteraction
+import animateOpacityOnInteraction
+import animateScaleOnInteraction
 import dev.kilua.core.IComponent
 import dev.kilua.form.text.textRef
 import dev.kilua.html.AlignItems
@@ -29,14 +32,11 @@ import dev.kilua.html.button
 import dev.kilua.html.div
 import dev.kilua.html.img
 import dev.kilua.html.px
-import dev.kilua.html.style.PClass
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
-import dev.kilua.utils.rem
 import onMouseOut
 import onMouseOver
 import rememberBreakpoint
-import scale
 import toComposeColor
 import toKiluaColor
 
@@ -83,15 +83,10 @@ fun IComponent.TopBar() {
         }
 
         // Home Button
-        val hoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-            scale(Constants.SCALE_HOVERED)
-        }
-        val pressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
-            opacity(0.8)
-            scale(1.0f)
-        }
-        div(className = hoverStyle % pressStyle) {
+        div {
             alignSelf(AlignItems.Center)
+            animateOpacityOnInteraction()
+            animateScaleOnInteraction()
             background(Background(color = Colors.container))
             borderRadius(24.px)
             svg(viewBox = Constants.VIEW_BOX_24) {
@@ -183,24 +178,17 @@ fun IComponent.TopBar() {
             }
 
             // Browser Icon
-            val browseButtonHoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-                scale(Constants.SCALE_HOVERED)
-                style("fill", Colors.white.value)
-            }
-            val browseButtonPressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
-                opacity(0.8)
-                scale(1.0f)
-                style("fill", Colors.onContainer.value)
-            }
-            svg(
-                className = browseButtonHoverStyle % browseButtonPressStyle,
-                viewBox = Constants.VIEW_BOX_24
-            ) {
-                draggable(false)
-                fill(
-                    if (focusedComponent == FocusedComponent.SearchBar) Colors.white.value
-                    else Colors.onContainer.value
+            svg(viewBox = Constants.VIEW_BOX_24) {
+                animateColorOnInteraction(
+                    normalColor = if (focusedComponent == FocusedComponent.SearchBar) Colors.white
+                    else Colors.onContainer,
+                    hoverColor = Colors.white,
+                    pressColor = Colors.onContainer,
+                    applyOnFill = true,
                 )
+                animateOpacityOnInteraction()
+                animateScaleOnInteraction()
+                draggable(false)
                 height(24.px)
                 marginLeft(12.px)
                 marginRight(16.px)
@@ -219,8 +207,10 @@ fun IComponent.TopBar() {
 
         if (breakpoint isGreaterThan Breakpoint.Tablet) {
             // Explore Premium Button
-            button(className = hoverStyle % pressStyle) {
+            button {
                 alignSelf(AlignItems.Center)
+                animateOpacityOnInteraction()
+                animateScaleOnInteraction()
                 background(Background(color = Colors.white))
                 border(Border(style = BorderStyle.None))
                 borderRadius(18.px)
@@ -239,8 +229,10 @@ fun IComponent.TopBar() {
         }
 
         // Install App Button
-        div(className = hoverStyle % pressStyle) {
+        div {
             alignItems(AlignItems.Center)
+            animateOpacityOnInteraction()
+            animateScaleOnInteraction()
             display(Display.Flex)
             marginLeft(16.px)
             role(Constants.Role.BUTTON)
@@ -268,24 +260,17 @@ fun IComponent.TopBar() {
         }
 
         // Notification Icon Button
-        val notificationButtonHoverStyle = dev.kilua.html.style.style(pClass = PClass.Hover) {
-            scale(Constants.SCALE_HOVERED)
-            style("fill", Colors.white.value)
-        }
-        val notificationButtonPressStyle = dev.kilua.html.style.style(pClass = PClass.Active) {
-            opacity(0.8)
-            scale(1.0f)
-            style("fill", Colors.onContainer.value)
-        }
-        svg(
-            className = notificationButtonHoverStyle % notificationButtonPressStyle,
-            viewBox = Constants.VIEW_BOX_16
-        ) {
+        svg(viewBox = Constants.VIEW_BOX_16) {
             alignSelf(AlignItems.Center)
-            fill(
-                if (focusedComponent == FocusedComponent.BellIcon) Colors.white.value
-                else Colors.onContainer.value
+            animateColorOnInteraction(
+                normalColor = if (focusedComponent == FocusedComponent.BellIcon) Colors.white
+                else Colors.onContainer,
+                hoverColor = Colors.white,
+                pressColor = Colors.onContainer,
+                applyOnFill = true,
             )
+            animateOpacityOnInteraction()
+            animateScaleOnInteraction()
             height(16.px)
             marginLeft(32.px)
             marginRight(24.px)
@@ -299,8 +284,10 @@ fun IComponent.TopBar() {
         }
 
         // User Avatar
-        div(className = notificationButtonHoverStyle % notificationButtonPressStyle) {
+        div {
             alignItems(AlignItems.Center)
+            animateOpacityOnInteraction()
+            animateScaleOnInteraction()
             alignSelf(AlignItems.Center)
             background(Background(color = Colors.container))
             borderRadius(24.px)

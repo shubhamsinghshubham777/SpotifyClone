@@ -1,3 +1,4 @@
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
@@ -15,11 +16,7 @@ import dev.kilua.html.Color
 import dev.kilua.html.ITag
 import dev.kilua.html.helpers.TagEvents
 import dev.kilua.html.helpers.TagStyleFun
-import dev.kilua.html.style.CssStyle
-import dev.kilua.html.style.PClass
-import dev.kilua.html.style.style
 import dev.kilua.utils.jsObjectOf
-import dev.kilua.utils.rem
 import web.dom.HTMLElement
 import web.dom.events.Event
 import web.dom.events.MouseEvent
@@ -105,6 +102,24 @@ fun <E : HTMLElement> ITag<E>.animateScaleOnInteraction(
                 else -> 1f
             }
         ).value
+    )
+}
+
+@Composable
+fun <E : HTMLElement> ITag<E>.animateOpacityOnInteraction(
+    onHover: Float = 1f,
+    onPress: Float = 0.8f,
+) {
+    val isHovered by rememberIsHoveredAsState()
+    val isPressed by rememberIsPressedAsState()
+    opacity(
+        animateFloatAsState(
+            when {
+                isPressed -> onPress
+                isHovered -> onHover
+                else -> 1f
+            }
+        ).value.toDouble()
     )
 }
 
@@ -197,21 +212,6 @@ fun <E : HTMLElement> ITag<E>.rememberWidth(): State<Double?> {
         onDispose { observer.disconnect() }
     }
     return widthState
-}
-
-// TODO: Use this function in older code
-@Composable
-fun classNameFromStyle(
-    onHover: (@Composable CssStyle.() -> Unit)? = null,
-    onPress: (@Composable CssStyle.() -> Unit)? = null,
-): String? {
-    val hoverStyle = onHover?.let { safeOnHover ->
-        style(pClass = PClass.Hover, content = safeOnHover)
-    }
-    val pressStyle = onPress?.let { safeOnPress ->
-        style(pClass = PClass.Active, content = safeOnPress)
-    }
-    return hoverStyle % pressStyle
 }
 
 @Composable

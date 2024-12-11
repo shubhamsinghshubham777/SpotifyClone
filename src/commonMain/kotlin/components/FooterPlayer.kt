@@ -9,7 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import classNameFromStyle
+import animateColorOnInteraction
+import animateOpacityOnInteraction
+import animateScaleOnInteraction
 import dev.kilua.core.IComponent
 import dev.kilua.form.number.range
 import dev.kilua.html.AlignItems
@@ -25,13 +27,9 @@ import dev.kilua.html.px
 import dev.kilua.html.vw
 import dev.kilua.panel.hPanel
 import dev.kilua.panel.vPanel
-import dev.kilua.panel.vPanelRef
 import dev.kilua.svg.circle
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
-import rememberIsHoveredAsState
-import rememberIsPressedAsState
-import scale
 
 @Composable
 fun IComponent.FooterPlayer() {
@@ -92,27 +90,16 @@ fun IComponent.FooterPlayer() {
                     paths = arrayOf(Assets.IC_PREVIOUS_TRACK_BTN_PATH_16),
                     onClick = {}
                 )
-                svg(viewBox = "0 0 32 32") {
-                    val isHovered by rememberIsHoveredAsState()
-                    val isPressed by rememberIsPressedAsState()
+                svg(viewBox = Constants.VIEW_BOX_32) {
+                    animateOpacityOnInteraction(
+                        onHover = ContentOpacity.SELECTED_HOVERED,
+                        onPress = ContentOpacity.SELECTED_PRESSED,
+                    )
+                    animateScaleOnInteraction()
                     fill(Colors.white.value)
                     height(32.px)
                     onClick { isMusicPlaying = !isMusicPlaying }
-                    opacity(
-                        when {
-                            isPressed -> ContentOpacity.SELECTED_PRESSED.toDouble()
-                            isHovered -> ContentOpacity.SELECTED_HOVERED.toDouble()
-                            else -> 1.0
-                        }
-                    )
                     role(Constants.Role.BUTTON)
-                    scale(
-                        when {
-                            isPressed -> 1f
-                            isHovered -> Constants.SCALE_HOVERED
-                            else -> 1f
-                        }
-                    )
                     width(32.px)
                     circle(16.px, 16.px, 16.px)
                     path(if (isMusicPlaying) Assets.IC_PAUSE_PATH_16 else Assets.IC_PLAY_PATH) {
@@ -223,28 +210,22 @@ private fun IComponent.controlIcon(
     onClick: (() -> Unit)? = null,
     style: (@Composable IDiv.() -> Unit)? = null,
 ) {
-    val size = 16
-    val contentColor = if (isSelected) Colors.greenButtonBG else Colors.white
-    vPanelRef(
-        alignItems = AlignItems.Center,
-        className = classNameFromStyle(
-            onHover = { scale(Constants.SCALE_HOVERED) },
-            onPress = {
-                opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
-                scale(1f)
-            },
-        )
-    ) {
+    val size = remember { 16 }
+    val contentColor = remember(isSelected) {
+        if (isSelected) Colors.greenButtonBG else Colors.white
+    }
+    vPanel(alignItems = AlignItems.Center) {
+        animateOpacityOnInteraction()
+        animateScaleOnInteraction()
         onClick { onClick?.invoke() }
         style?.invoke(this)
         div { height((size / 2).px) }
-        svg(
-            className = classNameFromStyle(
-                onHover = { style("fill", contentColor.value) }
-            ),
-            viewBox = Constants.VIEW_BOX_16
-        ) {
-            fill(if (isSelected) Colors.greenButtonBG.value else Colors.onContainer.value)
+        svg(viewBox = Constants.VIEW_BOX_16) {
+            animateColorOnInteraction(
+                normalColor = if (isSelected) Colors.greenButtonBG else Colors.onContainer,
+                hoverColor = contentColor,
+                applyOnFill = true,
+            )
             height(size.px)
             minHeight(size.px)
             minWidth(size.px)
@@ -252,13 +233,12 @@ private fun IComponent.controlIcon(
             width(size.px)
             for (currentPath in paths) path(currentPath)
         }
-        svg(
-            className = classNameFromStyle(
-                onHover = { style("fill", contentColor.value) }
-            ),
-            viewBox = "0 0 4 4"
-        ) {
-            fill(Colors.greenButtonBG.value)
+        svg(viewBox = Constants.VIEW_BOX_4) {
+            animateColorOnInteraction(
+                normalColor = Colors.greenButtonBG,
+                hoverColor = contentColor,
+                applyOnFill = true,
+            )
             height(4.px)
             marginTop(4.px)
             opacity(if (isSelected) 1.0 else 0.0)
