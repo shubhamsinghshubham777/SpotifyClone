@@ -45,8 +45,9 @@ fun IComponent.ListItem(
 ) = div {
     val breakpoint by rememberBreakpoint()
     val isNotDesktop by remember { derivedStateOf { breakpoint != Breakpoint.Desktop } }
-    val sizePx by remember { derivedStateOf { if (isNotDesktop) 48.px else 64.px } }
+    val containerSizePx by remember { derivedStateOf { if (isNotDesktop) 48.px else 64.px } }
     val textSizePx by remember { derivedStateOf { if (isNotDesktop) 12.px else 15.px } }
+    val greenButtonSize by remember { derivedStateOf { if (isNotDesktop) 32 else 48 } }
 
     val isHovered by rememberIsHoveredAsState()
     val animatedBGColor by animateColorAsState(
@@ -61,7 +62,7 @@ fun IComponent.ListItem(
     borderRadius(4.px)
     display(Display.Flex)
     flexGrow(1)
-    height(sizePx)
+    height(containerSizePx)
     overflow(Overflow.Hidden)
     position(Position.Relative)
     role(Constants.Role.BUTTON)
@@ -76,8 +77,8 @@ fun IComponent.ListItem(
                 color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
             )
         )
-        height(sizePx)
-        width(sizePx)
+        height(containerSizePx)
+        width(containerSizePx)
     }
 
     span {
@@ -96,7 +97,7 @@ fun IComponent.ListItem(
     div { flexGrow(1) }
 
     // Play Button
-    if (isHovered) GreenPlayButton()
+    if (isHovered) GreenPlayButton(sizePx = greenButtonSize)
 }
 
 @Composable

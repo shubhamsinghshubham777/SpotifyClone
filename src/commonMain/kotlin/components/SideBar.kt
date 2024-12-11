@@ -20,7 +20,7 @@ import dev.kilua.html.Background
 import dev.kilua.html.BoxShadow
 import dev.kilua.html.Color
 import dev.kilua.html.Display
-import dev.kilua.html.ISpan
+import dev.kilua.html.IDiv
 import dev.kilua.html.JustifyContent
 import dev.kilua.html.JustifyItems
 import dev.kilua.html.Overflow
@@ -35,12 +35,14 @@ import dev.kilua.html.perc
 import dev.kilua.html.px
 import dev.kilua.html.span
 import dev.kilua.html.spant
-import dev.kilua.html.style.style
 import dev.kilua.panel.flexPanel
 import dev.kilua.panel.hPanel
 import dev.kilua.panel.vPanel
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
+import disablePointerEvents
+import enablePointerEvents
+import hideScrollbar
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import rememberScrollPosition
@@ -98,11 +100,7 @@ fun IComponent.SideBar(
         vPanel(className = containerClassName) {
             overflowY(Overflow.Auto)
             paddingBottom(4.px)
-            style(".$containerClassName::-webkit-scrollbar") {
-                display(Display.None)
-                // For Firefox
-                style("scrollbar-width", "none")
-            }
+            hideScrollbar(containerClassName)
             scrollPosition = rememberScrollPosition(ScrollDirection.Vertical).value
             if (isExpanded) SearchAndRecentsButtons()
             FakeLibraryList(isExpanded = isExpanded, isFullExpanded = isFullExpandedMax)
@@ -542,7 +540,7 @@ private fun IComponent.FilterRow(isFullExpanded: Boolean) {
             overflowX(Overflow.Scroll)
             paddingLeft(16.px)
             paddingRight(8.px)
-            style("scrollbar-width", "none")
+            hideScrollbar()
             scrollPosition = rememberScrollPosition(ScrollDirection.Horizontal).value
             filters.forEachIndexed { index, filter ->
                 SelectableChip(
@@ -561,17 +559,21 @@ private fun IComponent.FilterRow(isFullExpanded: Boolean) {
 }
 
 @Composable
-private fun IComponent.FilterScrollButton(
+fun IComponent.FilterScrollButton(
     isStartButton: Boolean = true,
-    config: @Composable ISpan.() -> Unit,
+    showGradient: Boolean = true,
+    config: @Composable IDiv.() -> Unit,
 ) {
-    span {
-        background(Background(Color.Black))
-        style(
-            name = "background",
-            value = "linear-gradient(to ${if (isStartButton) "right" else "left"}, ${Colors.containerElevated.value} 40%, ${Colors.transparent.value})"
-        )
-        style("pointer-events", "none")
+    flexPanel {
+        alignItems(AlignItems.Center)
+        disablePointerEvents()
+        justifyContent(if (isStartButton) JustifyContent.Start else JustifyContent.End)
+        if (showGradient) {
+            style(
+                name = "background",
+                value = "linear-gradient(to ${if (isStartButton) "right" else "left"}, ${Colors.containerElevated.value} 40%, ${Colors.transparent.value})"
+            )
+        }
         width(100.px)
         config()
 
@@ -594,12 +596,12 @@ private fun IComponent.FilterScrollButton(
             background(Background(color = animatedBackgroundColor.toKiluaColor()))
             borderRadius(16.px)
             display(Display.Flex)
+            enablePointerEvents()
             height(32.px)
-            justifyContent(JustifyContent.Center)
             if (!isStartButton) justifySelf(JustifyItems.End)
             if (isStartButton) marginLeft(16.px) else marginRight(16.px)
+            justifyContent(JustifyContent.Center)
             role(Constants.Role.BUTTON)
-            style("pointer-events", "auto")
             width(32.px)
             svg(viewBox = Constants.VIEW_BOX_16) {
                 fill(animatedContentColor.toHexString())

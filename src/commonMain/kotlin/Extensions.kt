@@ -13,6 +13,7 @@ import components.ScrollDirection
 import components.ScrollPosition
 import dev.kilua.html.Background
 import dev.kilua.html.Color
+import dev.kilua.html.Display
 import dev.kilua.html.ITag
 import dev.kilua.html.helpers.TagEvents
 import dev.kilua.html.helpers.TagStyleFun
@@ -28,6 +29,25 @@ import web.window
 
 @Composable
 fun <E : HTMLElement> TagStyleFun<E>.scale(scale: Float = 1f) = style("scale", "$scale $scale")
+
+@Composable
+fun <E : HTMLElement> TagStyleFun<E>.hideScrollbar(className: String? = null) {
+    if (className != null) {
+        dev.kilua.html.style.style(".$className::-webkit-scrollbar") {
+            display(Display.None)
+            // For Firefox
+            style("scrollbar-width", "none")
+        }
+    } else {
+        style("scrollbar-width", "none")
+    }
+}
+
+@Composable
+fun <E : HTMLElement> TagStyleFun<E>.disablePointerEvents() = style("pointer-events", "none")
+
+@Composable
+fun <E : HTMLElement> TagStyleFun<E>.enablePointerEvents() = style("pointer-events", "auto")
 
 @Composable
 fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(

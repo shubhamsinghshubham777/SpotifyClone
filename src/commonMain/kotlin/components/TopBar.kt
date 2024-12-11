@@ -42,7 +42,7 @@ import toKiluaColor
 
 @Composable
 fun IComponent.TopBar() {
-    var focusedComponent: FocusedComponent? by remember { mutableStateOf(null) }
+    var focusedComponent: FocusedComponent? by remember { mutableStateOf(FocusedComponent.HomeButton) }
     var isSearchBarHovered by remember { mutableStateOf(false) }
 
     var backgroundColor by remember { mutableStateOf(Colors.container) }

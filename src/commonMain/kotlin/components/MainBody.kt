@@ -7,6 +7,7 @@ import Constants
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -42,17 +43,22 @@ import dev.kilua.html.spant
 import dev.kilua.panel.flexPanel
 import dev.kilua.panel.gridPanel
 import dev.kilua.panel.hPanel
+import dev.kilua.panel.hPanelRef
 import dev.kilua.panel.vPanel
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
+import disablePointerEvents
+import hideScrollbar
 import models.PlaylistBasicInfo
 import models.PlaylistType
 import rememberBreakpoint
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import rememberScrollOffset
+import rememberScrollPosition
 import rememberWidth
 import toKiluaColor
+import kotlin.random.Random
 
 @Composable
 fun IComponent.MainBody() {
@@ -92,6 +98,7 @@ fun IComponent.MainBody() {
         background(Background(color = Colors.containerElevated))
         borderRadius(Constants.CONTAINER_RADIUS.px)
         flexGrow(1)
+        overflowX(Overflow.Hidden)
         overflowY(Overflow.Auto)
         position(Position.Relative)
 
@@ -105,10 +112,13 @@ fun IComponent.MainBody() {
                     ).value.toKiluaColor()
                 ),
             )
-            padding(contentPadding)
+            paddingBottom(verticalPadding.px)
+            paddingLeft(horizontalPadding.px)
+            paddingRight(horizontalPadding.px)
+            paddingTop(verticalPadding.px)
             position(Position.Sticky)
             top(0.px)
-            zIndex(1)
+            zIndex(2)
             mediaTypeFilters.forEachIndexed { index, filter ->
                 SelectableChip(
                     text = filter,
@@ -120,11 +130,11 @@ fun IComponent.MainBody() {
 
         // Main Content
         vPanel {
+            width(100.perc)
             val animatedBackgroundColorState = animateColorAsState(
                 targetValue = hoveredColor,
                 animationSpec = tween(durationMillis = 1200, easing = LinearOutSlowInEasing)
             )
-            width(100.perc)
             position(Position.Absolute)
 
             PlaylistGrid(animatedBackgroundColorState) { hoveredListItemIndex = it }
@@ -144,8 +154,11 @@ fun IComponent.MainBody() {
                         else -> "Today's biggest hits"
                     },
                     playlists = List(7) { index ->
+                        val imageUrl = remember {
+                            "assets/playlist_images/img_${Random.nextInt(1, 40)}.png"
+                        }
                         PlaylistBasicInfo(
-                            imageUrl = "https://placehold.co/48x48?text=Spotify",
+                            imageUrl = imageUrl,
                             artists = when (listIndex) {
                                 0 -> when (index) {
                                     0 -> "Pritam, Shankar-Ehsaan-Loy, Vishal Shekhar"
@@ -354,14 +367,44 @@ fun IComponent.MainBody() {
 
 @Composable
 private fun IDiv.CategorisedPlaylists(categoryTitle: String, playlists: List<PlaylistBasicInfo>) {
-    vPanel {
-        hPanel(
+    vPanel(justifyContent = JustifyContent.Stretch) {
+        var scrollPosition by remember { mutableStateOf(ScrollPosition.ReachedStart) }
+        var arePlaylistsHovered by remember { mutableStateOf(false) }
+
+        val startOverlayOpacity by animateFloatAsState(
+            if (scrollPosition == ScrollPosition.ReachedStart) 0f else 0.4f
+        )
+        val endOverlayOpacity by animateFloatAsState(
+            if (scrollPosition == ScrollPosition.ReachedEnd) 0f else 0.4f
+        )
+
+        val startArrowAnimatedOpacity by animateFloatAsState(
+            when (scrollPosition) {
+                ScrollPosition.InBetween, ScrollPosition.ReachedEnd ->
+                    if (arePlaylistsHovered) 1f else 0f
+
+                else -> 0f
+            }
+        )
+        val endArrowAnimatedOpacity by animateFloatAsState(
+            when (scrollPosition) {
+                ScrollPosition.ReachedStart, ScrollPosition.InBetween ->
+                    if (arePlaylistsHovered) 1f else 0f
+
+                else -> 0f
+            }
+        )
+        val arrowAnimatedOffsetX by animateIntAsState(if (arePlaylistsHovered) 0 else -16)
+
+        position(Position.Relative)
+
+        val titlePanel = hPanelRef(
             alignItems = AlignItems.Center,
             justifyContent = JustifyContent.SpaceBetween
         ) {
             marginBottom(8.px)
-            paddingLeft(16.px)
-            paddingRight(32.px)
+            paddingLeft(horizontalPadding.px)
+            paddingRight(horizontalPadding.plus(16).px)
             spant(categoryTitle) {
                 val isHovered by rememberIsHoveredAsState()
                 color(Colors.white)
@@ -380,77 +423,131 @@ private fun IDiv.CategorisedPlaylists(categoryTitle: String, playlists: List<Pla
             }
         }
 
-        gridPanel {
-            gridAutoRows("0px")
-            gridTemplateColumns("repeat(auto-fit, minmax(160px, 1fr))")
-            gridTemplateRows("auto")
-            marginBottom(48.px)
-            marginLeft(4.px)
-            marginRight(12.px)
-            overflow(Overflow.Hidden)
-            for (playlist in playlists) {
-                vPanel {
-                    animateColorOnInteraction(
-                        normalColor = Colors.transparent,
-                        hoverColor = Colors.container,
-                        pressColor = Colors.black,
-                        applyOnBackground = true
-                    )
-                    borderRadius(8.px)
-                    padding(12.px)
-                    role(Constants.Role.BUTTON)
-                    flexPanel {
-                        val isContainerHovered by rememberIsHoveredAsState()
-                        position(Position.Relative)
-                        img(playlist.imageUrl) {
-                            borderRadius(
-                                when (playlist.type) {
-                                    PlaylistType.Songs -> 8.px
-                                    PlaylistType.Artist -> 50.perc
-                                }
-                            )
-                            boxShadow(
-                                BoxShadow(
-                                    hOffset = 0.px,
-                                    vOffset = 4.px,
-                                    blurRadius = 8.px,
-                                    spreadRadius = 0.px,
-                                    color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
-                                )
-                            )
-                            height(100.perc)
-                            style("aspect-ratio", "1/1")
-                            width(100.perc)
-                        }
-                        GreenPlayButton(sizePx = 48, marginBottomPx = 8) {
-                            val animatedOpacity by animateFloatAsState(
-                                if (isContainerHovered) 1f else 0f
-                            )
-                            val animatedTranslationY by animateFloatAsState(
-                                if (isContainerHovered) 0f else 4f
-                            )
-                            opacity(animatedOpacity.toDouble())
-                            transform("translate(0 $animatedTranslationY)")
-                        }
-                    }
-                    if (playlist.title != null) {
-                        spant(playlist.title) {
-                            color(Colors.white)
-                            marginTop(12.px)
-                        }
-                    }
-                    spant(playlist.artists) {
-                        color(Colors.onContainer)
-                        fontSize(0.8125.rem)
-                        marginTop(if (playlist.title != null) 4.px else 12.px)
-                        overflowY(Overflow.Hidden)
-                        style("-webkit-box-orient", "vertical")
-                        style("-webkit-line-clamp", "2")
-                        style("display", "-webkit-box")
-                        textOverflow(TextOverflow.Ellipsis)
-                    }
-                }
+        // Mask/Gradient on both left and right sides
+        div {
+            val startColor by remember {
+                derivedStateOf { "rgba(18, 18, 18, $startOverlayOpacity)" }
             }
+            val endColor by remember {
+                derivedStateOf { "rgba(18, 18, 18, $endOverlayOpacity)" }
+            }
+            bottom(0.px)
+            disablePointerEvents()
+            position(Position.Absolute)
+            style(
+                "background-image",
+                "linear-gradient(to right, $startColor, transparent 7%, transparent 93%, $endColor)"
+            )
+            style("height", "calc(100% - ${titlePanel.element.clientHeight}px)")
+            width(100.perc)
+            zIndex(1)
+        }
+
+        FilterScrollButton(isStartButton = true, showGradient = false) {
+            val isHovered by rememberIsHoveredAsState()
+            bottom(0.px)
+            left(if (isHovered) 0.px else arrowAnimatedOffsetX.px)
+            opacity(if (isHovered) 1.0 else startArrowAnimatedOpacity.toDouble())
+            position(Position.Absolute)
+            style("height", "calc(100% - ${titlePanel.element.clientHeight}px)")
+            zIndex(1)
+        }
+
+        FilterScrollButton(isStartButton = false, showGradient = false) {
+            val isHovered by rememberIsHoveredAsState()
+            bottom(0.px)
+            opacity(if (isHovered) 1.0 else endArrowAnimatedOpacity.toDouble())
+            position(Position.Absolute)
+            right(if (isHovered) 0.px else arrowAnimatedOffsetX.px)
+            style("height", "calc(100% - ${titlePanel.element.clientHeight}px)")
+            zIndex(1)
+        }
+
+        hPanel {
+            arePlaylistsHovered = rememberIsHoveredAsState().value
+            scrollPosition = rememberScrollPosition(ScrollDirection.Horizontal).value
+            hideScrollbar()
+            marginBottom(48.px)
+            overflowX(Overflow.Scroll)
+            paddingLeft(horizontalPadding.minus(playlistItemPadding).px)
+            paddingRight(horizontalPadding.plus(playlistItemPadding).px)
+            position(Position.Relative)
+            style("scroll-snap-type", "x mandatory")
+
+            for (playlist in playlists) PlaylistItem(playlist)
+        }
+    }
+}
+
+@Composable
+private fun IDiv.PlaylistItem(playlist: PlaylistBasicInfo) {
+    val breakpoint by rememberBreakpoint()
+    val itemSize by remember {
+        derivedStateOf {
+            if (breakpoint.isSmallerThan(Breakpoint.Desktop)) 171.px else 196.px
+        }
+    }
+    vPanel {
+        val isContainerHovered by rememberIsHoveredAsState()
+        animateColorOnInteraction(
+            normalColor = Colors.transparent,
+            hoverColor = Colors.container,
+            pressColor = Colors.black,
+            applyOnBackground = true
+        )
+        borderRadius(8.px)
+        padding(playlistItemPadding.px)
+        role(Constants.Role.BUTTON)
+        width(itemSize)
+        minWidth(itemSize)
+        flexPanel {
+            position(Position.Relative)
+            img(playlist.imageUrl) {
+                borderRadius(
+                    when (playlist.type) {
+                        PlaylistType.Songs -> 8.px
+                        PlaylistType.Artist -> 50.perc
+                    }
+                )
+                boxShadow(
+                    BoxShadow(
+                        hOffset = 0.px,
+                        vOffset = 4.px,
+                        blurRadius = 8.px,
+                        spreadRadius = 0.px,
+                        color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
+                    )
+                )
+                width(100.perc)
+                style("aspect-ratio", "1/1")
+                style("object-fit", "cover")
+            }
+            GreenPlayButton(sizePx = 48, marginBottomPx = 8) {
+                val animatedOpacity by animateFloatAsState(
+                    if (isContainerHovered) 1f else 0f
+                )
+                val animatedTranslationY by animateFloatAsState(
+                    if (isContainerHovered) 0f else 4f
+                )
+                opacity(animatedOpacity.toDouble())
+                transform("translate(0 $animatedTranslationY)")
+            }
+        }
+        if (playlist.title != null) {
+            spant(playlist.title) {
+                color(Colors.white)
+                marginTop(12.px)
+            }
+        }
+        spant(playlist.artists) {
+            color(Colors.onContainer)
+            fontSize(0.8125.rem)
+            marginTop(if (playlist.title != null) 4.px else 12.px)
+            overflowY(Overflow.Hidden)
+            style("-webkit-box-orient", "vertical")
+            style("-webkit-line-clamp", "2")
+            style("display", "-webkit-box")
+            textOverflow(TextOverflow.Ellipsis)
         }
     }
 }
@@ -529,8 +626,8 @@ private fun IDiv.PlaylistGrid(
         display(Display.Grid)
         gridTemplateColumns("1fr 1fr${if (isLargeGrid) " 1fr 1fr" else ""}")
         paddingBottom(56.px)
-        paddingLeft(16.px)
-        paddingRight(16.px)
+        paddingLeft(horizontalPadding.px)
+        paddingRight(horizontalPadding.px)
         paddingTop(64.px)
         rowGap(if (isNotDesktop) 8.px else 12.px)
         style(
@@ -560,7 +657,9 @@ private fun IDiv.PlaylistGrid(
     }
 }
 
-private val contentPadding = 16.px
+private const val horizontalPadding = 40
+private const val playlistItemPadding = 12
+private const val verticalPadding = 16
 private val mediaTypeFilters = listOf("All", "Music", "Podcasts")
 
 private val fakePlaylists = listOf(
