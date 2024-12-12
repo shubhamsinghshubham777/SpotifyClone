@@ -1,0 +1,37 @@
+name: Kotlin/WASM Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle and build project
+        uses: gradle/gradle-build-action@v3
+
+      - name: Grant Permission to Execute Gradle
+        run: chmod +x gradlew
+
+      - name: Generate WASM distribution
+        run: ./gradlew wasmJsBrowserDistribution
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-args: '--prod'
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          working-directory: ./build/dist/wasmJs/productionExecutable
