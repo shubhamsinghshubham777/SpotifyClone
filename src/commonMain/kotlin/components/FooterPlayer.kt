@@ -147,7 +147,7 @@ fun IComponent.FooterPlayer() {
                     opacity(ContentOpacity.SELECTED_PRESSED.toDouble())
                 }
                 SpotifyRange(
-                    className = "slider-1",
+                    className = "track-progress-slider",
                     initialValue = 13
                 ) {
                     flexGrow(1)
@@ -209,7 +209,8 @@ fun IComponent.FooterPlayer() {
                     }
                 )
                 SpotifyRange(
-                    className = "slider-2",
+                    className = "volume-slider",
+                    initialValue = 30,
                     onProgressChange = { progress = it }
                 ) {
                     marginLeft(8.px)
