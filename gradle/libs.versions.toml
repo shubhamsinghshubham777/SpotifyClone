@@ -1,21 +1,16 @@
 [versions]
+compose = "1.7.0"
 kilua = "0.0.17"
 kotlin = "2.0.21"
-compose = "1.7.0"
 
 [libraries]
 kilua = { module = "dev.kilua:kilua", version.ref = "kilua" }
 kilua-bootstrap = { module = "dev.kilua:kilua-bootstrap", version.ref = "kilua" }
-kilua-bootstrap-icons = { module = "dev.kilua:kilua-bootstrap-icons", version.ref = "kilua" }
-kilua-i18n = { module = "dev.kilua:kilua-i18n", version.ref = "kilua" }
-kilua-lazyLayouts = { module = "dev.kilua:kilua-lazy-layouts", version.ref = "kilua" }
-kilua-splitjs = { module = "dev.kilua:kilua-splitjs", version.ref = "kilua" }
 kilua-ssr = { module = "dev.kilua:kilua-ssr", version.ref = "kilua" }
 kilua-svg = { module = "dev.kilua:kilua-svg", version.ref = "kilua" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kilua = { id = "dev.kilua", version.ref = "kilua" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kilua)
@@ -46,12 +45,9 @@ kotlin {
                 implementation(compose.animation)
                 implementation(libs.kilua)
                 implementation(libs.kilua.bootstrap)
-                implementation(libs.kilua.bootstrap.icons)
-                implementation(libs.kilua.i18n)
-                implementation(libs.kilua.lazyLayouts)
-                implementation(libs.kilua.splitjs)
                 implementation(libs.kilua.ssr)
                 implementation(libs.kilua.svg)
+                implementation(npm("aaa-kilua-assets", "0.0.15"))
             }
         }
         val jsMain by getting {

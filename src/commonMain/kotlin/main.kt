@@ -8,10 +8,7 @@ import components.SplitPanel
 import components.TopBar
 import dev.kilua.Application
 import dev.kilua.BootstrapCssModule
-import dev.kilua.BootstrapIconsModule
-import dev.kilua.BootstrapModule
 import dev.kilua.CoreModule
-import dev.kilua.SplitjsModule
 import dev.kilua.compose.root
 import dev.kilua.html.Background
 import dev.kilua.html.Color
@@ -75,10 +72,7 @@ fun main() {
     startApplication(
         ::App,
         webpackHot(),
-        BootstrapModule,
         BootstrapCssModule,
-        BootstrapIconsModule,
-        SplitjsModule,
         CoreModule,
     )
 }
