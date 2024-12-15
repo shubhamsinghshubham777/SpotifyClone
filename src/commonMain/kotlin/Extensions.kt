@@ -17,6 +17,7 @@ import dev.kilua.html.Display
 import dev.kilua.html.ITag
 import dev.kilua.html.helpers.TagEvents
 import dev.kilua.html.helpers.TagStyleFun
+import dev.kilua.html.style.globalStyle
 import dev.kilua.utils.jsObjectOf
 import web.dom.HTMLElement
 import web.dom.events.Event
@@ -33,7 +34,7 @@ fun <E : HTMLElement> TagStyleFun<E>.scale(scale: Float = 1f) = style("scale", "
 @Composable
 fun <E : HTMLElement> TagStyleFun<E>.hideScrollbar(className: String? = null) {
     if (className != null) {
-        dev.kilua.html.style.style(".$className::-webkit-scrollbar") {
+        globalStyle(".$className::-webkit-scrollbar") {
             display(Display.None)
             // For Firefox
             style("scrollbar-width", "none")

@@ -153,7 +153,7 @@ fun IComponent.MainBody() {
                         8 -> "More of what you like"
                         else -> "Today's biggest hits"
                     },
-                    playlists = List(7) { index ->
+                    playlists = List(15) { index ->
                         val imageUrl = remember {
                             "assets/playlist_images/img_${Random.nextInt(1, 40)}.png"
                         }

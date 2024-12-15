@@ -31,7 +31,7 @@ import dev.kilua.html.divt
 import dev.kilua.html.img
 import dev.kilua.html.perc
 import dev.kilua.html.px
-import dev.kilua.html.style.style
+import dev.kilua.html.style.globalStyle
 import dev.kilua.html.vw
 import dev.kilua.panel.hPanel
 import dev.kilua.panel.vPanel
@@ -243,7 +243,7 @@ private fun IComponent.SpotifyRange(
     val progressColor by remember {
         derivedStateOf { if (isHovered) Color("#1ab853") else Color.White }
     }
-    val thumbClassName = style(selector = ".$className::-webkit-slider-thumb") {
+    val thumbClassName = globalStyle(selector = ".$className::-webkit-slider-thumb") {
         background(Background(color = if (isHovered) Colors.white else Colors.transparent))
         borderRadius(5.px)
         height(10.px)
@@ -252,7 +252,7 @@ private fun IComponent.SpotifyRange(
         style("transform", "translate(0px, -3px)")
         width(10.px)
     }
-    val runnableTrackClassName = style(selector = ".$className::-webkit-slider-runnable-track") {
+    val runnableTrackClassName = globalStyle(selector = ".$className::-webkit-slider-runnable-track") {
         borderRadius(2.px)
         height(4.px)
         style(
