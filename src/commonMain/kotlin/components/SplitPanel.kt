@@ -1,6 +1,5 @@
 package components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -9,21 +8,20 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
+import dev.kilua.animation.animateColorAsState
 import dev.kilua.core.IComponent
-import dev.kilua.html.Background
+import dev.kilua.html.Color
 import dev.kilua.html.Cursor
 import dev.kilua.html.IDiv
 import dev.kilua.html.JustifyItems
 import dev.kilua.html.div
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.perc
 import dev.kilua.html.px
 import dev.kilua.panel.hPanel
 import onGlobalPointerMove
 import onGlobalPointerUp
-import onPointerDown
 import rememberIsHoveredAsState
-import toKiluaColor
 import web.document
 import kotlin.math.roundToInt
 
@@ -85,7 +83,7 @@ fun IComponent.SplitPanel(
         div {
             val isHovered by rememberIsHoveredAsState()
             val animatedColor by animateColorAsState(
-                Color.White.copy(
+                Color.rgb(1f, 1f, 1f).copy(
                     alpha = when {
                         isGutterPressed -> 1f
                         isHovered -> 0.4863f
@@ -102,7 +100,7 @@ fun IComponent.SplitPanel(
             marginTop(gutterVerticalPadding.px)
             width(gutterHorizontalPadding.px)
             div {
-                background(Background(animatedColor.toKiluaColor()))
+                background(animatedColor)
                 height(100.perc)
                 justifySelf(JustifyItems.Center)
                 width(gutterWidth.px)

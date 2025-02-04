@@ -10,9 +10,9 @@ import dev.kilua.Application
 import dev.kilua.BootstrapCssModule
 import dev.kilua.CoreModule
 import dev.kilua.compose.root
-import dev.kilua.html.Background
 import dev.kilua.html.Color
 import dev.kilua.html.Overflow
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.perc
 import dev.kilua.html.px
 import dev.kilua.panel.vPanel
@@ -31,7 +31,7 @@ class App : Application() {
             }
 
             vPanel {
-                background(Background(Color.Black))
+                background(Color.Black)
                 height(100.perc)
                 TopBar()
                 SplitPanel(

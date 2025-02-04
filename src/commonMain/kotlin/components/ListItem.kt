@@ -5,19 +5,18 @@ import Breakpoint
 import Colors
 import Constants
 import ContentOpacity
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import animateColorOnInteraction
 import animateScaleOnInteraction
+import dev.kilua.animation.animateColorAsState
 import dev.kilua.core.IComponent
 import dev.kilua.html.AlignItems
-import dev.kilua.html.Background
 import dev.kilua.html.BoxShadow
+import dev.kilua.html.Color
 import dev.kilua.html.Display
 import dev.kilua.html.FontWeight
 import dev.kilua.html.IDiv
@@ -26,6 +25,7 @@ import dev.kilua.html.Position
 import dev.kilua.html.TextOverflow
 import dev.kilua.html.WhiteSpace
 import dev.kilua.html.div
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.img
 import dev.kilua.html.px
 import dev.kilua.html.span
@@ -35,7 +35,6 @@ import dev.kilua.svg.rect
 import dev.kilua.svg.svg
 import rememberBreakpoint
 import rememberIsHoveredAsState
-import toKiluaColor
 
 @Composable
 fun IComponent.ListItem(
@@ -51,14 +50,14 @@ fun IComponent.ListItem(
 
     val isHovered by rememberIsHoveredAsState()
     val animatedBGColor by animateColorAsState(
-        if (isHovered) Color.White.copy(alpha = ContentOpacity.HOVERED)
-        else Color.White.copy(alpha = ContentOpacity.NORMAL)
+        if (isHovered) Color.rgba(1f, 1f, 1f, ContentOpacity.HOVERED)
+        else Color.rgba(1f, 1f, 1f, ContentOpacity.NORMAL)
     )
 
     LaunchedEffect(isHovered) { onHoverChanged(isHovered) }
 
     alignItems(AlignItems.Center)
-    background(Background(color = animatedBGColor.toKiluaColor()))
+    background(color = animatedBGColor)
     borderRadius(4.px)
     display(Display.Flex)
     flexGrow(1)
@@ -74,7 +73,7 @@ fun IComponent.ListItem(
                 vOffset = 0.px,
                 blurRadius = 16.px,
                 spreadRadius = 4.px,
-                color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
+                color = Color.rgba(0f, 0f, 0f, 0.25f),
             )
         )
         height(containerSizePx)
@@ -120,7 +119,7 @@ fun IDiv.GreenPlayButton(
         boxShadow(
             BoxShadow(
                 blurRadius = 4.px,
-                color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
+                color = Color.rgba(0f, 0f, 0f, 0.25f),
                 hOffset = 0.px,
                 spreadRadius = 2.px,
                 vOffset = 4.px,

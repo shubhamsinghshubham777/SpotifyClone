@@ -1,13 +1,14 @@
 [versions]
-compose = "1.8.0-alpha01"
-kilua = "0.0.18"
-kotlin = "2.1.0"
+compose = "1.8.0-alpha02"
+kilua = "0.0.20-SNAPSHOT"
+kotlin = "2.1.10"
 
 [libraries]
 kilua = { module = "dev.kilua:kilua", version.ref = "kilua" }
 kilua-bootstrap = { module = "dev.kilua:kilua-bootstrap", version.ref = "kilua" }
 kilua-ssr = { module = "dev.kilua:kilua-ssr", version.ref = "kilua" }
 kilua-svg = { module = "dev.kilua:kilua-svg", version.ref = "kilua" }
+kilua-animation = { module = "dev.kilua:kilua-animation", version.ref = "kilua" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }

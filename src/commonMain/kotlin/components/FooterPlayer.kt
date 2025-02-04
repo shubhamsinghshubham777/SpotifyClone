@@ -20,7 +20,6 @@ import dev.kilua.externals.get
 import dev.kilua.form.number.IRange
 import dev.kilua.form.number.range
 import dev.kilua.html.AlignItems
-import dev.kilua.html.Background
 import dev.kilua.html.Color
 import dev.kilua.html.Cursor
 import dev.kilua.html.IDiv
@@ -28,6 +27,7 @@ import dev.kilua.html.JustifyContent
 import dev.kilua.html.TextOverflow
 import dev.kilua.html.div
 import dev.kilua.html.divt
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.img
 import dev.kilua.html.perc
 import dev.kilua.html.px
@@ -54,7 +54,7 @@ fun IComponent.FooterPlayer() {
     var isMiniPlayerSelected by remember { mutableStateOf(false) }
 
     hPanel {
-        background(Background(color = Color.Black))
+        background(color = Color.Black)
         height(88.px)
         padding(16.px)
 
@@ -244,7 +244,7 @@ private fun IComponent.SpotifyRange(
         derivedStateOf { if (isHovered) Color("#1ab853") else Color.White }
     }
     val thumbClassName = globalStyle(selector = ".$className::-webkit-slider-thumb") {
-        background(Background(color = if (isHovered) Colors.white else Colors.transparent))
+        background(color = if (isHovered) Colors.white else Colors.transparent)
         borderRadius(5.px)
         height(10.px)
         style("-webkit-appearance", "none")

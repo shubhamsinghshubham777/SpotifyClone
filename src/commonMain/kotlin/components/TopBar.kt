@@ -4,7 +4,6 @@ import Assets
 import Breakpoint
 import Colors
 import Constants
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,32 +12,15 @@ import androidx.compose.runtime.setValue
 import animateColorOnInteraction
 import animateOpacityOnInteraction
 import animateScaleOnInteraction
+import dev.kilua.animation.animateColorAsState
 import dev.kilua.core.IComponent
 import dev.kilua.form.text.textRef
-import dev.kilua.html.AlignItems
-import dev.kilua.html.Background
-import dev.kilua.html.Border
-import dev.kilua.html.BorderStyle
-import dev.kilua.html.Cursor
-import dev.kilua.html.Display
-import dev.kilua.html.FontWeight
-import dev.kilua.html.JustifyContent
-import dev.kilua.html.Outline
-import dev.kilua.html.OutlineStyle
-import dev.kilua.html.Overflow
-import dev.kilua.html.TextOverflow
-import dev.kilua.html.WhiteSpace
-import dev.kilua.html.button
-import dev.kilua.html.div
-import dev.kilua.html.img
-import dev.kilua.html.px
+import dev.kilua.html.*
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
+import dev.kilua.html.helpers.TagStyleFun.Companion.border
 import dev.kilua.svg.path
 import dev.kilua.svg.svg
-import onMouseOut
-import onMouseOver
 import rememberBreakpoint
-import toComposeColor
-import toKiluaColor
 
 @Composable
 fun IComponent.TopBar() {
@@ -48,14 +30,14 @@ fun IComponent.TopBar() {
     var backgroundColor by remember { mutableStateOf(Colors.container) }
     val animatedBackgroundColor by animateColorAsState(
         if (focusedComponent == FocusedComponent.SearchBar) {
-            Colors.containerHighlighted.value.toComposeColor()
-        } else backgroundColor.value.toComposeColor()
+            Colors.containerHighlighted
+        } else backgroundColor
     )
 
     var outlineColor by remember { mutableStateOf(Colors.transparent) }
     val animatedOutlineColor by animateColorAsState(
-        if (focusedComponent == FocusedComponent.SearchBar) Colors.white.value.toComposeColor()
-        else outlineColor.value.toComposeColor()
+        if (focusedComponent == FocusedComponent.SearchBar) Colors.white
+        else outlineColor
     )
 
     var textFieldRef: dev.kilua.form.text.Text? = null
@@ -87,7 +69,7 @@ fun IComponent.TopBar() {
             alignSelf(AlignItems.Center)
             animateOpacityOnInteraction()
             animateScaleOnInteraction()
-            background(Background(color = Colors.container))
+            background(color = Colors.container)
             borderRadius(24.px)
             svg(viewBox = Constants.VIEW_BOX_24) {
                 draggable(false)
@@ -110,12 +92,12 @@ fun IComponent.TopBar() {
         div {
             alignItems(AlignItems.Center)
             alignSelf(AlignItems.Center)
-            background(Background(color = animatedBackgroundColor.toKiluaColor()))
+            background(color = animatedBackgroundColor)
             border(
                 Border(
                     width = if (focusedComponent == FocusedComponent.SearchBar) 2.px else 1.px,
                     style = BorderStyle.Solid,
-                    color = animatedOutlineColor.toKiluaColor()
+                    color = animatedOutlineColor
                 )
             )
             borderRadius(25.px)
@@ -155,7 +137,7 @@ fun IComponent.TopBar() {
 
             // TextField
             textFieldRef = textRef {
-                border(Border(style = BorderStyle.None))
+                border(style = BorderStyle.None)
                 color(Colors.white)
                 if (focusedComponent != FocusedComponent.SearchBar) cursor(Cursor.Pointer)
                 flexGrow(1)
@@ -171,7 +153,7 @@ fun IComponent.TopBar() {
             // Vertical Divider
             div {
                 alignSelf(AlignItems.Center)
-                background(Background(color = Colors.onContainer))
+                background(color = Colors.onContainer)
                 height(28.px)
                 opacity(0.5)
                 style("width", "0.5px")
@@ -211,8 +193,8 @@ fun IComponent.TopBar() {
                 alignSelf(AlignItems.Center)
                 animateOpacityOnInteraction()
                 animateScaleOnInteraction()
-                background(Background(color = Colors.white))
-                border(Border(style = BorderStyle.None))
+                background(color = Colors.white)
+                border(style = BorderStyle.None)
                 borderRadius(18.px)
                 color(Colors.black)
                 fontSize(13.px)
@@ -289,7 +271,7 @@ fun IComponent.TopBar() {
             animateOpacityOnInteraction()
             animateScaleOnInteraction()
             alignSelf(AlignItems.Center)
-            background(Background(color = Colors.container))
+            background(color = Colors.container)
             borderRadius(24.px)
             display(Display.Flex)
             height(48.px)
@@ -298,7 +280,7 @@ fun IComponent.TopBar() {
             width(48.px)
             div {
                 alignItems(AlignItems.Center)
-                background(Background(color = Colors.avatarBackground))
+                background(color = Colors.avatarBackground)
                 borderRadius(16.px)
                 color(Colors.black)
                 display(Display.Flex)
