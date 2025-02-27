@@ -31,12 +31,12 @@ https://github.com/user-attachments/assets/2ed5fa7e-49c4-4c67-902e-7095eea33d80
 
 # Build 🔧
 
-To build the application, you need to have JDK 17 or later installed.
+To build the application, you need to have JDK 21 or later installed.
 
 The following tasks are available:
 
-- `./gradlew -t jsRun` - run the webpack dev server in continuous build mode for JS target on `http://localhost:3000`
-- `./gradlew -t wasmJsRun` - run the webpack dev server in continuous build mode for Wasm target on `http://localhost:3000`
+- `./gradlew -t jsBrowserDevelopmentRun` - run the webpack dev server in continuous build mode for JS target on `http://localhost:3000`
+- `./gradlew -t jsBrowserProductionRun` - run the webpack dev server in continuous build mode for Wasm target on `http://localhost:3000`
 - `./gradlew jsBrowserDistribution` - build production application for JS target to `build/dist/js/productionExecutable` directory
 - `./gradlew wasmJsBrowserDistribution` - build production application for Wasm target to `build/dist/wasmJs/productionExecutable` directory
 
