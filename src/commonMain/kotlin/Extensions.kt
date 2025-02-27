@@ -1,38 +1,34 @@
-
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import components.ScrollDirection
 import components.ScrollPosition
-import dev.kilua.html.Background
+import dev.kilua.animation.animateColorAsState
+import dev.kilua.animation.animateFloatAsState
 import dev.kilua.html.Color
 import dev.kilua.html.Display
 import dev.kilua.html.ITag
 import dev.kilua.html.helpers.TagEvents
 import dev.kilua.html.helpers.TagStyleFun
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.style.globalStyle
 import dev.kilua.utils.jsObjectOf
 import web.dom.HTMLElement
 import web.dom.events.Event
-import web.dom.events.MouseEvent
 import web.dom.observers.ResizeObserver
 import web.dom.observers.ResizeObserverOptions
-import web.dom.pointerevents.PointerEvent
 import web.get
 import web.window
 
 @Composable
-fun <E : HTMLElement> TagStyleFun<E>.scale(scale: Float = 1f) = style("scale", "$scale $scale")
+fun TagStyleFun.scale(scale: Float = 1f) = style("scale", "$scale $scale")
 
 @Composable
-fun <E : HTMLElement> TagStyleFun<E>.hideScrollbar(className: String? = null) {
+fun TagStyleFun.hideScrollbar(className: String? = null) {
     if (className != null) {
         globalStyle(".$className::-webkit-scrollbar") {
             display(Display.None)
@@ -45,10 +41,10 @@ fun <E : HTMLElement> TagStyleFun<E>.hideScrollbar(className: String? = null) {
 }
 
 @Composable
-fun <E : HTMLElement> TagStyleFun<E>.disablePointerEvents() = style("pointer-events", "none")
+fun TagStyleFun.disablePointerEvents() = style("pointer-events", "none")
 
 @Composable
-fun <E : HTMLElement> TagStyleFun<E>.enablePointerEvents() = style("pointer-events", "auto")
+fun TagStyleFun.enablePointerEvents() = style("pointer-events", "auto")
 
 @Composable
 fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(
@@ -59,7 +55,7 @@ fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(
     applyOnColor: Boolean = false,
     applyOnFill: Boolean = false,
 ): State<Color> {
-    val composeColorState = when {
+    val colorState = when {
         hoverColor != null && pressColor != null -> {
             val isHovered by rememberIsHoveredAsState()
             val isPressed by rememberIsPressedAsState()
@@ -68,7 +64,7 @@ fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(
                     isPressed -> pressColor
                     isHovered -> hoverColor
                     else -> normalColor
-                }.value.toComposeColor()
+                }
             )
         }
 
@@ -78,7 +74,7 @@ fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(
                 when {
                     isPressed -> pressColor
                     else -> normalColor
-                }.value.toComposeColor()
+                }
             )
         }
 
@@ -88,24 +84,17 @@ fun <E : HTMLElement> ITag<E>.animateColorOnInteraction(
                 when {
                     isHovered -> hoverColor
                     else -> normalColor
-                }.value.toComposeColor()
+                }
             )
         }
 
-        else -> animateColorAsState(normalColor.value.toComposeColor())
+        else -> animateColorAsState(normalColor)
     }
+    if (applyOnBackground) background(color = colorState.value)
+    if (applyOnColor) color(colorState.value)
+    if (applyOnFill) style("fill", colorState.value.value)
 
-    val kiluaColor = remember {
-        derivedStateOf {
-            composeColorState.value.toKiluaColor()
-        }
-    }
-
-    if (applyOnBackground) background(Background(color = kiluaColor.value))
-    if (applyOnColor) color(kiluaColor.value)
-    if (applyOnFill) style("fill", kiluaColor.value.value)
-
-    return kiluaColor
+    return colorState
 }
 
 @Composable
@@ -236,27 +225,7 @@ fun <E : HTMLElement> ITag<E>.rememberWidth(): State<Double?> {
 }
 
 @Composable
-fun <E : HTMLElement> TagEvents<E>.onMouseOver(listener: (MouseEvent) -> Unit) =
-    onEvent("mouseover", listener)
-
-@Composable
-fun <E : HTMLElement> TagEvents<E>.onMouseOut(listener: (MouseEvent) -> Unit) =
-    onEvent("mouseout", listener)
-
-@Composable
-fun <E : HTMLElement> TagEvents<E>.onMouseMove(listener: (MouseEvent) -> Unit) =
-    onEvent("mousemove", listener)
-
-@Composable
-fun <E : HTMLElement> TagEvents<E>.onPointerDown(listener: (PointerEvent) -> Unit) =
-    onEvent("pointerdown", listener)
-
-@Composable
-fun <E : HTMLElement> TagEvents<E>.onPointerUp(listener: (PointerEvent) -> Unit) =
-    onEvent("pointerup", listener)
-
-@Composable
-fun <E : HTMLElement> TagEvents<E>.rememberIsPressedAsState(): State<Boolean> {
+fun TagEvents.rememberIsPressedAsState(): State<Boolean> {
     val state = remember { mutableStateOf(false) }
     onPointerDown { state.value = true }
     onGlobalPointerUp { state.value = false }
@@ -264,7 +233,7 @@ fun <E : HTMLElement> TagEvents<E>.rememberIsPressedAsState(): State<Boolean> {
 }
 
 @Composable
-fun <E : HTMLElement> TagEvents<E>.rememberIsHoveredAsState(): State<Boolean> {
+fun TagEvents.rememberIsHoveredAsState(): State<Boolean> {
     val state = remember { mutableStateOf(false) }
     onMouseOver { state.value = true }
     onMouseOut { state.value = false }

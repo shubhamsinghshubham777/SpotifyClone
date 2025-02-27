@@ -4,11 +4,6 @@ import Assets
 import Breakpoint
 import Colors
 import Constants
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -17,12 +12,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import animateColorOnInteraction
+import dev.kilua.animation.MotionAnimation
+import dev.kilua.animation.animateColorAsState
+import dev.kilua.animation.animateFloatAsState
+import dev.kilua.animation.animateIntAsState
 import dev.kilua.core.IComponent
 import dev.kilua.html.AlignItems
-import dev.kilua.html.Background
 import dev.kilua.html.BoxShadow
+import dev.kilua.html.Color
 import dev.kilua.html.Cursor
 import dev.kilua.html.Display
 import dev.kilua.html.FlexWrap
@@ -35,6 +33,7 @@ import dev.kilua.html.TextDecoration
 import dev.kilua.html.TextDecorationLine
 import dev.kilua.html.TextOverflow
 import dev.kilua.html.div
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.img
 import dev.kilua.html.perc
 import dev.kilua.html.px
@@ -57,8 +56,8 @@ import rememberIsPressedAsState
 import rememberScrollOffset
 import rememberScrollPosition
 import rememberWidth
-import toKiluaColor
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun IComponent.MainBody() {
@@ -66,16 +65,16 @@ fun IComponent.MainBody() {
     var hoveredListItemIndex by remember { mutableStateOf(0) }
     val hoveredColor by remember {
         derivedStateOf {
-            Color(
+            Color.hex(
                 when (hoveredListItemIndex) {
-                    0 -> 0XFF3B5C56
-                    1 -> 0XFF3B4650
-                    2 -> 0XFF461610
-                    3 -> 0XFF301A17
-                    4 -> 0XFF4F5E2B
-                    5 -> 0XFF561B26
-                    6 -> 0XFF202020
-                    else -> 0XFF614C3D
+                    0 -> 0x3B5C56
+                    1 -> 0x3B4650
+                    2 -> 0x461610
+                    3 -> 0x301A17
+                    4 -> 0x4F5E2B
+                    5 -> 0x561B26
+                    6 -> 0x202020
+                    else -> 0x614C3D
                 }
             )
         }
@@ -95,7 +94,7 @@ fun IComponent.MainBody() {
             }
         }
 
-        background(Background(color = Colors.containerElevated))
+        background(color = Colors.containerElevated)
         borderRadius(Constants.CONTAINER_RADIUS.px)
         flexGrow(1)
         overflowX(Overflow.Hidden)
@@ -105,12 +104,13 @@ fun IComponent.MainBody() {
         // Filter Chips
         hPanel(gap = 8.px) {
             background(
-                Background(
-                    color = animateColorAsState(
-                        targetValue = hoveredColor.copy(alpha = headerBackgroundOpacity),
-                        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
-                    ).value.toKiluaColor()
-                ),
+                color = animateColorAsState(
+                    value = hoveredColor.copy(alpha = headerBackgroundOpacity),
+                    animation = MotionAnimation.Tween(
+                        duration = 500.milliseconds,
+                        cubicBezier = listOf(0.0, 0.0, 0.2, 1.0)
+                    ) // LinearOutSlowInEasing
+                ).value,
             )
             paddingBottom(verticalPadding.px)
             paddingLeft(horizontalPadding.px)
@@ -132,8 +132,11 @@ fun IComponent.MainBody() {
         vPanel {
             width(100.perc)
             val animatedBackgroundColorState = animateColorAsState(
-                targetValue = hoveredColor,
-                animationSpec = tween(durationMillis = 1200, easing = LinearOutSlowInEasing)
+                value = hoveredColor,
+                animation = MotionAnimation.Tween(
+                    duration = 1200.milliseconds,
+                    cubicBezier = listOf(0.0, 0.0, 0.2, 1.0)
+                ) // LinearOutSlowInEasing
             )
             position(Position.Absolute)
 
@@ -332,7 +335,7 @@ fun IComponent.MainBody() {
 
             // Divider
             div {
-                background(Background(color = Colors.containerHighlighted))
+                background(color = Colors.containerHighlighted)
                 flexGrow(1)
                 height(1.px)
                 marginBottom(32.px)
@@ -522,7 +525,7 @@ private fun IDiv.PlaylistItem(playlist: PlaylistBasicInfo) {
                         vOffset = 4.px,
                         blurRadius = 8.px,
                         spreadRadius = 0.px,
-                        color = Color.Black.copy(alpha = 0.25f).toKiluaColor(),
+                        color = Color.rgba(0f, 0f, 0f, 0.25f),
                     )
                 )
                 width(100.perc)
@@ -577,9 +580,9 @@ private fun IDiv.SocialMediaButton(vararg paths: String) {
         val isPressed by rememberIsPressedAsState()
         // TODO: Extract these colors out
         animateColorOnInteraction(
-            normalColor = dev.kilua.html.Color("#292929"),
-            hoverColor = dev.kilua.html.Color("#727272"),
-            pressColor = dev.kilua.html.Color("#555555"),
+            normalColor = Color.hex(0x292929),
+            hoverColor = Color.hex(0x727272),
+            pressColor = Color.hex(0x555555),
             applyOnBackground = true,
         )
         borderRadius(20.px)
@@ -640,7 +643,7 @@ private fun IDiv.PlaylistGrid(
         style(
             name = "background",
             value = "linear-gradient(" +
-                    "${animatedBackgroundColorState.value.toKiluaColor().value}, " +
+                    "${animatedBackgroundColorState.value.value}, " +
                     "${Colors.transparent.value} 70%)"
         )
         fakePlaylists.forEachIndexed { index, title ->

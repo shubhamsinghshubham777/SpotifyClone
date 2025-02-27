@@ -3,19 +3,17 @@ package components
 import Colors
 import Constants
 import ContentOpacity
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
+import dev.kilua.animation.animateColorAsState
 import dev.kilua.core.IComponent
-import dev.kilua.html.Background
+import dev.kilua.html.Color
 import dev.kilua.html.ISpan
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.html.px
 import dev.kilua.html.span
 import rememberIsHoveredAsState
 import rememberIsPressedAsState
-import toComposeColor
-import toKiluaColor
 
 @Composable
 fun IComponent.SelectableChip(
@@ -27,7 +25,7 @@ fun IComponent.SelectableChip(
     val isHovered by rememberIsHoveredAsState()
     val isPressed by rememberIsPressedAsState()
     val animatedBackgroundColor by animateColorAsState(
-        Color.White.copy(
+        Color.rgb(1f, 1f, 1f).copy(
             alpha = when {
                 isSelected && isPressed -> ContentOpacity.SELECTED_PRESSED
                 isSelected && isHovered -> ContentOpacity.SELECTED_HOVERED
@@ -39,12 +37,12 @@ fun IComponent.SelectableChip(
         )
     )
     val animatedContentColor by animateColorAsState(
-        if (isSelected) Colors.black.value.toComposeColor()
-        else Colors.white.value.toComposeColor()
+        if (isSelected) Colors.black
+        else Colors.white
     )
-    background(Background(color = animatedBackgroundColor.toKiluaColor()))
+    background(color = animatedBackgroundColor)
     borderRadius(20.px)
-    color(animatedContentColor.toKiluaColor())
+    color(animatedContentColor)
     fontSize(12.px)
     onClick { onSelectionChange(!isSelected) }
     paddingBottom(7.px)

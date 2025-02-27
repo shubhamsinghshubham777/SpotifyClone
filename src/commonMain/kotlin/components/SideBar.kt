@@ -3,8 +3,6 @@ package components
 import Assets
 import Colors
 import Constants
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -14,27 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import animateColorOnInteraction
 import animateScaleOnInteraction
+import dev.kilua.animation.animateColorAsState
+import dev.kilua.animation.animateFloatAsState
 import dev.kilua.core.IComponent
-import dev.kilua.html.AlignItems
-import dev.kilua.html.Background
-import dev.kilua.html.BoxShadow
-import dev.kilua.html.Color
-import dev.kilua.html.Display
-import dev.kilua.html.IDiv
-import dev.kilua.html.JustifyContent
-import dev.kilua.html.JustifyItems
-import dev.kilua.html.Overflow
-import dev.kilua.html.Position
-import dev.kilua.html.TextAlign
-import dev.kilua.html.TextOverflow
-import dev.kilua.html.WhiteSpace
-import dev.kilua.html.div
-import dev.kilua.html.divt
-import dev.kilua.html.img
-import dev.kilua.html.perc
-import dev.kilua.html.px
-import dev.kilua.html.span
-import dev.kilua.html.spant
+import dev.kilua.html.*
+import dev.kilua.html.helpers.TagStyleFun.Companion.background
 import dev.kilua.panel.flexPanel
 import dev.kilua.panel.hPanel
 import dev.kilua.panel.vPanel
@@ -47,9 +29,6 @@ import rememberIsHoveredAsState
 import rememberIsPressedAsState
 import rememberScrollPosition
 import scale
-import toComposeColor
-import toHexString
-import toKiluaColor
 
 @Composable
 fun IComponent.SideBar(
@@ -70,7 +49,7 @@ fun IComponent.SideBar(
 
     vPanel {
         var scrollPosition by remember { mutableStateOf(ScrollPosition.ReachedStart) }
-        background(Background(color = Colors.containerElevated))
+        background(color = Colors.containerElevated)
         borderRadius(Constants.CONTAINER_RADIUS.px)
         height(100.perc)
 
@@ -81,13 +60,12 @@ fun IComponent.SideBar(
                     hOffset = 0.px,
                     vOffset = 6.px,
                     blurRadius = 10.px,
-                    color = androidx.compose.ui.graphics.Color.Black
+                    color = Color.rgb(0f, 0f, 0f)
                         .copy(
                             alpha = animateFloatAsState(
                                 if (scrollPosition != ScrollPosition.ReachedStart) 0.6f else 0f
                             ).value
-                        )
-                        .toKiluaColor(),
+                        ),
                 )
             )
             zIndex(1)
@@ -277,7 +255,7 @@ private fun IComponent.LibraryItem(
                     alignItems = AlignItems.Center,
                     justifyContent = JustifyContent.Center
                 ) {
-                    background(Background(color = Color.Black))
+                    background(color = Color.Black)
                     borderRadius(imgBorderRadius.px)
                     height(imageSize.px)
                     left(imgPadding.px)
@@ -357,14 +335,12 @@ private fun IComponent.SearchAndRecentsButtons() {
         ) {
             val isHovered by rememberIsHoveredAsState()
             background(
-                Background(
-                    color = animateColorAsState(
-                        when {
-                            isHovered -> Colors.containerHighlighted
-                            else -> Colors.transparent
-                        }.value.toComposeColor()
-                    ).value.toKiluaColor()
-                )
+                color = animateColorAsState(
+                    when {
+                        isHovered -> Colors.containerHighlighted
+                        else -> Colors.transparent
+                    }
+                ).value
             )
             borderRadius(16.px)
             height(32.px)
@@ -376,8 +352,8 @@ private fun IComponent.SearchAndRecentsButtons() {
                         when {
                             isHovered -> Colors.white
                             else -> Colors.onContainer
-                        }.value.toComposeColor()
-                    ).value.toHexString()
+                        }
+                    ).value.value
                 )
                 height(16.px)
                 width(16.px)
@@ -474,17 +450,17 @@ private fun IComponent.TitleBar(isExpanded: Boolean) {
                         isPlusButtonPressed -> Colors.black
                         isPlusButtonHovered -> Colors.containerHighlighted
                         else -> Colors.transparent
-                    }.value.toComposeColor()
+                    }
                 )
                 val animatedPlusButtonContentColor by animateColorAsState(
                     when {
                         isPlusButtonHovered || isPlusButtonPressed -> Colors.white
                         else -> Colors.onContainer
-                    }.value.toComposeColor()
+                    }
                 )
 
                 alignItems(AlignItems.Center)
-                background(Background(color = animatedBGColor.toKiluaColor()))
+                background(color = animatedBGColor)
                 borderRadius(16.px)
                 display(Display.Flex)
                 height(titleBarHeight.px)
@@ -493,7 +469,7 @@ private fun IComponent.TitleBar(isExpanded: Boolean) {
                 width(32.px)
 
                 svg(viewBox = Constants.VIEW_BOX_16) {
-                    fill(animatedPlusButtonContentColor.toHexString())
+                    fill(animatedPlusButtonContentColor.value)
                     height(16.px)
                     width(16.px)
 
@@ -581,19 +557,19 @@ fun IComponent.FilterScrollButton(
             val isHovered by rememberIsHoveredAsState()
             val animatedBackgroundColor by animateColorAsState(
                 when {
-                    isHovered -> Colors.containerHighlighted.value.toComposeColor()
-                    else -> Colors.container.value.toComposeColor()
+                    isHovered -> Colors.containerHighlighted
+                    else -> Colors.container
                 }
             )
             val animatedContentColor by animateColorAsState(
                 when {
-                    isHovered -> Colors.white.value.toComposeColor()
-                    else -> Colors.onContainer.value.toComposeColor()
+                    isHovered -> Colors.white
+                    else -> Colors.onContainer
                 }
             )
 
             alignItems(AlignItems.Center)
-            background(Background(color = animatedBackgroundColor.toKiluaColor()))
+            background(color = animatedBackgroundColor)
             borderRadius(16.px)
             display(Display.Flex)
             enablePointerEvents()
@@ -604,7 +580,7 @@ fun IComponent.FilterScrollButton(
             role(Constants.Role.BUTTON)
             width(32.px)
             svg(viewBox = Constants.VIEW_BOX_16) {
-                fill(animatedContentColor.toHexString())
+                fill(animatedContentColor.value)
                 height(16.px)
                 width(16.px)
                 if (!isStartButton) scale(-1f)

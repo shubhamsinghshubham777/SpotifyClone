@@ -42,12 +42,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.animation)
                 implementation(libs.kilua)
                 implementation(libs.kilua.bootstrap)
                 implementation(libs.kilua.ssr)
                 implementation(libs.kilua.svg)
-                implementation(npm("aaa-kilua-assets", "0.0.15"))
+                implementation(libs.kilua.animation)
             }
         }
         val jsMain by getting {
